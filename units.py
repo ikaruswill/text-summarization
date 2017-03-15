@@ -1,3 +1,5 @@
+import string_utils
+
 class Phrase():
 	content = None
 	is_NP = true
@@ -80,7 +82,7 @@ class Phrase():
         return self.is_NP and this.content.lower() in pronouns
 
     def get_word_length(self):
-        #TODO
+        return string_utils.count_words(self.content)
 
     def get_sentence_node_id(self):
         return self.sentence_node_id
