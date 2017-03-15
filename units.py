@@ -85,6 +85,23 @@ class Phrase():
     def get_sentence_node_id(self):
         return self.sentence_node_id
 
+class Paragraph():
+    doc = None #annotation
+    tokens = []
+    concepts_to_frequency = {}
+
+    def __init__(self, concepts_to_frequency):
+        self.concepts_to_frequency = concepts_to_frequency
+
+    def get_concepts(self):
+        return self.concepts_to_frequency.keys()
+
+    def count_frequency(self, concept):
+        if concept in concepts_to_frequency:
+            return concepts_to_frequency[concept]
+        else:
+            return 0
+
 def main():
     t = "This is my question; what   _ yeah"
     p = Phrase(t, False)
