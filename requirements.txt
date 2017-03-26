@@ -1,0 +1,6 @@
+corenlp-python==3.4.1.post1
+nltk==3.2.2
+pexpect==4.2.1
+ptyprocess==0.5.1
+six==1.10.0
+xmltodict==0.10.2
