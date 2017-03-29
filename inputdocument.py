@@ -3,8 +3,11 @@ from preprocess import remove_stopwords
 import xml.etree.ElementTree
 from units import Paragraph
 import utility
+import re
 
 class InputDocument(object):
+	__p_marker = '\n\n'
+
 	def __init__(self, input_str, isTAC=True):
 		full_annotator_list = ["tokenize", "ssplit", "pos", "lemma", "ner", "parse", "dcoref"]
 		cn = pywrap.CoreNLP(url='http://localhost:9000', annotator_list=full_annotator_list)
@@ -24,10 +27,13 @@ class InputDocument(object):
 		root = xml.etree.ElementTree.fromstring(xml_string)
 		self.headline = root.find('.//HEADLINE').text
 		text = ''
+		# To replace \n in line breaks within <P> tag
+		# Note: Minor issue with with 16\n-year-old --> 16 -year-old
+		newline_regex = re.compile('\n')
 		for child in root.find('.//TEXT'):
 			if child.tag == 'P':
-				text += child.text
-		return text
+				text += newline_regex.sub(' ', child.text.strip()) + self.__class__.__p_marker
+		return text.strip()
 
 	def extract_named_entities(self, result):
 		named_entities = []
@@ -66,7 +72,7 @@ class InputDocument(object):
 		
 	def prepare_paragraphs(self, text, result):
 		paragraphs = []
-		paragraphs_text = text.split('\n')
+		paragraphs_text = text.split(self.__class__.__p_marker)
 		for paragraph_text in paragraphs_text:
 			paragraph_concept_frequency = self.extract_concepts_from_string(paragraph_text)
 			paragraph = Paragraph(paragraph_concept_frequency)
