@@ -18,7 +18,7 @@ def generate_bigrams(text):
 def split_string_to_words(text):
 	return text.split()
 
-def increment_value(self, dictionary, key):
+def increment_value(dictionary, key):
 	if key not in dictionary:
 		dictionary[key] = 0
 	dictionary[key] += 1
