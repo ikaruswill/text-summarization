@@ -9,7 +9,7 @@ def load_file(file_path):
 def count_words(text):
 	return len(text.split())
 
-def generate_unigrams(text):
+def tokenize(text):
 	return wordpunct_tokenize(text)
 
 def generate_bigrams(tokens):

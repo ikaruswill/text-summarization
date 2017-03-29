@@ -78,16 +78,16 @@ class InputDocument(object):
 		concept_frequency_dict = {}
 
 		# Consider using Counter class as optimization
-		unigrams = utility.generate_unigrams(string)
-		filtered_unigrams = set()
-		for unigram in unigrams:
-			if unigram in self.word_to_lemma_dict:
-				lemma = self.word_to_lemma_dict[unigram]
-				filtered_unigrams.add(lemma)
+		tokens = utility.tokenize(string)
+		preprocessed_unigrams = set()
+		for token in tokens:
+			if token in self.word_to_lemma_dict:
+				lemma = self.word_to_lemma_dict[token]
+				preprocessed_unigrams.add(lemma)
 				utility.increment_value(concept_frequency_dict, lemma)
 
-		bigrams = utility.generate_bigrams(filtered_unigrams)
-		for bigram in bigrams:
+		preprocessed_bigrams = utility.generate_bigrams(preprocessed_unigrams)
+		for bigram in preprocessed_bigrams:
 			utility.increment_value(concept_frequency_dict, bigram)
 
 		for entity in self.named_entities:
