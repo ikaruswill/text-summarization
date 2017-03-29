@@ -17,6 +17,7 @@ class InputDocument(object):
 		else:
 			text = input_str
 
+		# Note: corenlp recognizes sentences delimiters as periods regardless of newlines
 		result = cn.basic(text, out_format='json').json()
 		self.named_entities = self.extract_named_entities(result)
 		self.coreferences = self.extract_coreferences(result)
@@ -85,17 +86,22 @@ class InputDocument(object):
 
 		# Consider using Counter class as optimization
 		tokens = utility.tokenize(string)
-		preprocessed_unigrams = set()
+		encountered = set()
+		lemma_unigrams = []
 		for token in tokens:
 			if token in self.word_to_lemma_dict:
 				lemma = self.word_to_lemma_dict[token]
-				preprocessed_unigrams.add(lemma)
+				if lemma not in encountered:
+					encountered.add(lemma)
+					lemma_unigrams.append(lemma)
 				utility.increment_value(concept_frequency_dict, lemma)
 
-		preprocessed_bigrams = utility.generate_bigrams(preprocessed_unigrams)
-		for bigram in preprocessed_bigrams:
+		# Note: Bigrams are generated from ordered unique lemmas not original string
+		lemma_bigrams = utility.generate_bigrams(lemma_unigrams)
+		for bigram in lemma_bigrams:
 			utility.increment_value(concept_frequency_dict, bigram)
 
+		# Note: Named entities may duplicate with unigrams or bigrams as they are in un-preprocessed form
 		for entity in self.named_entities:
 			if entity in string:
 				utility.increment_value(concept_frequency_dict, entity)
