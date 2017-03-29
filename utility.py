@@ -1,4 +1,5 @@
 from nltk.util import ngrams
+from nltk.tokenize import wordpunct_tokenize
 
 def load_file(file_path):
 	with open(file_path, 'r') as f:
@@ -9,7 +10,7 @@ def count_words(text):
 	return len(text.split())
 
 def generate_unigrams(text):
-	return list(ngrams(text.lower(), 1))
+	return wordpunct_tokenize(text)
 
 def generate_bigrams(text):
 	return list(ngrams(text.lower(), 2))
