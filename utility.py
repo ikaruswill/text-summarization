@@ -13,7 +13,7 @@ def generate_unigrams(text):
 	return wordpunct_tokenize(text)
 
 def generate_bigrams(tokens):
-	return list([' '.join(bigram) for bigram in ngrams(tokens, 2)])
+	return [' '.join(bigram) for bigram in ngrams(tokens, 2)]
 
 def split_string_to_words(text):
 	return text.split()
