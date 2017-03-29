@@ -15,9 +15,6 @@ def tokenize(text):
 def generate_bigrams(tokens):
 	return [' '.join(bigram) for bigram in ngrams(tokens, 2)]
 
-def split_string_to_words(text):
-	return text.split()
-
 def increment_value(dictionary, key):
 	if key not in dictionary:
 		dictionary[key] = 0
