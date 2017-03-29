@@ -1,4 +1,4 @@
-import string_utils
+import utility
 
 class Phrase():
 	content = None
@@ -82,25 +82,25 @@ class Phrase():
         return self.is_NP and this.content.lower() in pronouns
 
     def get_word_length(self):
-        return string_utils.count_words(self.content)
+        return utility.count_words(self.content)
 
     def get_sentence_node_id(self):
         return self.sentence_node_id
 
 class Paragraph():
-    doc = None #annotation
-    tokens = []
-    concepts_to_frequency = {}
+    doc = None #annotation, null
+    tokens = [] #list of labels, null
+    concept_frequency = {}
 
-    def __init__(self, concepts_to_frequency):
-        self.concepts_to_frequency = concepts_to_frequency
+    def __init__(self, concept_frequency):
+        self.concept_frequency = concept_frequency
 
     def get_concepts(self):
-        return self.concepts_to_frequency.keys()
+        return self.concept_frequency.keys()
 
     def count_frequency(self, concept):
-        if concept in concepts_to_frequency:
-            return concepts_to_frequency[concept]
+        if concept in concept_frequency:
+            return concept_frequency[concept]
         else:
             return 0
 
