@@ -86,7 +86,7 @@ class InputDocument(object):
 				filtered_unigrams.add(lemma)
 				utility.increment_value(concept_frequency_dict, lemma)
 
-		bigrams = utility.generate_bigrams(string)
+		bigrams = utility.generate_bigrams(filtered_unigrams)
 		for bigram in bigrams:
 			utility.increment_value(concept_frequency_dict, bigram)
 
