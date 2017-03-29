@@ -14,7 +14,7 @@ class InputDocument(object):
 
 		result = cn.basic(text, out_format='json').json()
 		self.named_entities = self.extract_named_entities(result)
-		self.extract_coreferences(result)
+		self.coreferences = self.extract_coreferences(result)
 		self.word_to_lemma_dict = self.build_word_to_lemma_dict(result)
 		self.prepare_paragraphs(result)
 
@@ -36,7 +36,21 @@ class InputDocument(object):
 		return named_entities
 
 	def extract_coreferences(self, result):
-		pass
+		corefs = {}
+
+		for coref_chain_id, mentions in result['corefs']:
+			if len(mentions) == 1:
+				continue
+
+			mentions_set = set()
+			for mention in mentions:
+				mentions_set.add(mention['text'])
+				if mention['isRepresentativeMention']:
+					representative_mention = mention
+
+			corefs[representative_mention['text']] = mentions_set
+
+		return corefs
 
 	def build_word_to_lemma_dict(self, result):
 		tokens = [token for sentence in result['sentences'] for token in sentence['tokens']]
