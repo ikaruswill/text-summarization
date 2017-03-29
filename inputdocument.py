@@ -40,12 +40,12 @@ class InputDocument(object):
 	def extract_coreferences(self, result):
 		corefs = {}
 
-		for coref_chain_id, mentions in result['corefs']:
-			if len(mentions) == 1:
+		for coref_chain in result['corefs'].values():
+			if len(coref_chain) == 1:
 				continue
 
 			mentions_set = set()
-			for mention in mentions:
+			for mention in coref_chain:
 				mentions_set.add(mention['text'])
 				if mention['isRepresentativeMention']:
 					representative_mention = mention
@@ -77,8 +77,9 @@ class InputDocument(object):
 	def extract_concepts_from_string(self, string):
 		concept_frequency_dict = {}
 
+		# Consider using Counter class as optimization
 		unigrams = utility.generate_unigrams(string)
-		filtered_unigrams = set() # OrderedSet?
+		filtered_unigrams = set()
 		for unigram in unigrams:
 			if unigram in self.word_to_lemma_dict:
 				lemma = self.word_to_lemma_dict[unigram]
