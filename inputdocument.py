@@ -66,15 +66,15 @@ class InputDocument(object):
 		
 	def prepare_paragraphs(self, text, result):
 		paragraphs = []
-		paragraphs_text = text.splti('\n')
+		paragraphs_text = text.split('\n')
 		for paragraph_text in paragraphs_text:
-			paragraph_concept_frequency = extract_concepts_from_string(paragraph_text)
+			paragraph_concept_frequency = self.extract_concepts_from_string(paragraph_text)
 			paragraph = Paragraph(paragraph_concept_frequency)
-			paragraphs.add(paragraph)
+			paragraphs.append(paragraph)
 		
 		return paragraphs
 
-	def extract_concepts_from_string(self, string, named_entities):
+	def extract_concepts_from_string(self, string):
 		concept_frequency_dict = {}
 
 		unigrams = utility.generate_unigrams(string)
