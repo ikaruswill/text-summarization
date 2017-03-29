@@ -1,11 +1,10 @@
 from corenlp_pywrap import pywrap
-from preprocess import remove_stopwords
 import xml.etree.ElementTree
 from units import Paragraph
 import utility
 import re
 
-class InputDocument(object):
+class InputDocument():
 	__p_marker = '\n\n'
 
 	def __init__(self, input_str, isTAC=True):
@@ -63,7 +62,7 @@ class InputDocument(object):
 
 	def build_word_to_lemma_dict(self, result):
 		tokens = [token for sentence in result['sentences'] for token in sentence['tokens']]
-		tokens = remove_stopwords(tokens, 'originalText')
+		tokens = utility.remove_stopwords(tokens, 'originalText')
 
 		word_to_lemma_dict = {}
 		for token in tokens:
