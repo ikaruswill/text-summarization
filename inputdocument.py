@@ -22,7 +22,7 @@ class InputDocument(object):
 
 	def parse_xml_string(self, xml_string):
 		root = xml.etree.ElementTree.fromstring(xml_string)
-		self.headline = root.find('.//HEADLINE')
+		self.headline = root.find('.//HEADLINE').text
 		text = ''
 		for child in root.find('.//TEXT'):
 			if child.tag == 'P':
