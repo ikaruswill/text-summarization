@@ -1,6 +1,8 @@
 from corenlp_pywrap import pywrap
 from preprocess import remove_stopwords
 import xml.etree.ElementTree
+from units import Paragraph
+import utility
 
 class InputDocument(object):
 	def __init__(self, input_str, isTAC=True):
@@ -16,7 +18,7 @@ class InputDocument(object):
 		self.named_entities = self.extract_named_entities(result)
 		self.coreferences = self.extract_coreferences(result)
 		self.word_to_lemma_dict = self.build_word_to_lemma_dict(result)
-		self.prepare_paragraphs(result)
+		self.paragraphs = self.prepare_paragraphs(text, result)
 
 	def parse_xml_string(self, xml_string):
 		root = xml.etree.ElementTree.fromstring(xml_string)
@@ -62,6 +64,33 @@ class InputDocument(object):
 
 		return word_to_lemma_dict
 		
-	def prepare_paragraphs(self, result):
-		pass
+	def prepare_paragraphs(self, text, result):
+		paragraphs = []
+		paragraphs_text = text.splti('\n')
+		for paragraph_text in paragraphs_text:
+			paragraph_concept_frequency = extract_concepts_from_string(paragraph_text)
+			paragraph = Paragraph(paragraph_concept_frequency)
+			paragraphs.add(paragraph)
+		
+		return paragraphs
 
+	def extract_concepts_from_string(self, string, named_entities):
+		concept_frequency_dict = {}
+
+		unigrams = utility.generate_unigrams(string)
+		filtered_unigrams = set() # OrderedSet?
+		for unigram in unigrams:
+			if unigram in self.word_to_lemma_dict:
+				lemma = self.word_to_lemma_dict[unigram]
+				filtered_unigrams.add(lemma)
+				utility.increment_value(concept_frequency_dict, lemma)
+
+		bigrams = utility.generate_bigrams(string)
+		for bigram in bigrams:
+			utility.increment_value(concept_frequency_dict, bigram)
+
+		for entity in self.named_entities:
+			if entity in string:
+				utility.increment_value(concept_frequency_dict, entity)
+
+		return concept_frequency_dict
