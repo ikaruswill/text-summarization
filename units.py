@@ -81,7 +81,8 @@ class Phrase():
 	def is_pronoun(self):
 		return self.is_NP and this.content.lower() in pronouns
 
-	def get_word_length(self):
+	@property
+	def word_length(self):
 		return utility.count_words(self.content)
 
 	def get_sentence_node_id(self):
