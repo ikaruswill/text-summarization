@@ -22,6 +22,7 @@ class InputDocument():
 		self.coreferences = self.extract_coreferences(result)
 		self.word_to_lemma_dict = self.build_word_to_lemma_dict(result)
 		self.paragraphs = self.prepare_paragraphs(text, result)
+		self.sentences = self.sent_tokenize(text)
 
 	def parse_xml_string(self, xml_string):
 		root = xml.etree.ElementTree.fromstring(xml_string)
@@ -80,11 +81,14 @@ class InputDocument():
 		
 		return paragraphs
 
+	def get_sentences(self, text):
+		return utility.sent_tokenize(text)
+
 	def extract_concepts_from_string(self, string):
 		concept_frequency_dict = {}
 
 		# Consider using Counter class as optimization
-		tokens = utility.tokenize(string)
+		tokens = utility.word_tokenize(string)
 		encountered = set()
 		lemma_unigrams = []
 		for token in tokens:
