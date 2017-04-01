@@ -22,7 +22,7 @@ class InputDocument():
 		self.coreferences = self.extract_coreferences(result)
 		self.word_to_lemma_dict = self.build_word_to_lemma_dict(result)
 		self.paragraphs = self.prepare_paragraphs(text, result)
-		self.sentences = self.sent_tokenize(text)
+		self.sentences = utility.sent_tokenize(text)
 
 	def parse_xml_string(self, xml_string):
 		root = xml.etree.ElementTree.fromstring(xml_string)
