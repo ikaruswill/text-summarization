@@ -34,30 +34,6 @@ class Phrase():
 	def __eq__(self, phrase):
 		return self.content == phrase
 
-	def get_content(self):
-		return self.content
-
-	def setContent(self, content):
-		self.content = content
-
-	def is_NP(self):
-		return self.is_NP
-
-	def set_score(self, value):
-		self.score = value
-
-	def get_score(self):
-		if self.score is not None:
-			return self.score
-		else:
-			print("What the hell", self)
-
-	def get_id(self):
-		return self.phrase_id
-
-	def set_concepts(self, concepts):
-		self.concepts = concepts
-
 	def generate_concepts(self):
 		if self.concepts:
 			return
@@ -69,24 +45,13 @@ class Phrase():
 
 		return concepts
 
-	def get_parent_id(self):
-		return self.parent_id
-
-	def get_sentence_length(self):
-		return self.sentence_length
-
-	def set_sentence_length(self, value):
-		self.sentence_length = value
-
+	@property
 	def is_pronoun(self):
 		return self.is_NP and this.content.lower() in pronouns
 
 	@property
 	def word_length(self):
 		return utility.count_words(self.content)
-
-	def get_sentence_node_id(self):
-		return self.sentence_node_id
 
 class Paragraph():
 	doc = None #annotation, null
