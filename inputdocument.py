@@ -18,6 +18,7 @@ class InputDocument():
 
 		# Note: corenlp recognizes sentences delimiters as periods regardless of newlines
 		result = cn.basic(text, out_format='json').json()
+		# CAUTION: sentences may not coincide with the number of sentences in parse_trees
 		self.sentences = utility.sent_tokenize(text)
 		self.parse_trees = [sentence['parse'] for sentence in result['sentences']]
 		self.named_entities = self.extract_named_entities(result)
