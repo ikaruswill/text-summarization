@@ -36,7 +36,7 @@ class PhraseExtractor():
 
 				# Create new phrase
 				is_not_VP = not node.startswith('(VP')
-				phrase_content = get_phrase_text(parse_tree, i)
+				phrase_content = get_phrase_text(nodes, i)
 				phrase = Phrase(phrase_content, is_not_VP, -1, 0)
 				phrase.concepts = self.input_document.extract_concepts_from_string(phrase_content)
 				# Set current phrase sentence length to root sentence length
@@ -94,7 +94,7 @@ class PhraseExtractor():
 					# If l2 node is VP and l1 node is VP
 					if is_not_VP and child.strip().startswith('(NP') \
 					or if is_VP and child.strip().startswith('(VP'):
-						subphrase_content = get_phrase_text(parse_tree, i)
+						subphrase_content = get_phrase_text(nodes, i)
 						subphrase = Phrase(subphrase_content, is_not_VP, phrase.phrase_id, sentence_node_id)
 						subphrase.concepts = self.input_document.extract_concepts_from_string(subphrase_content)
 						# Set subphrase sentence_length to parent S node length
@@ -107,4 +107,28 @@ class PhraseExtractor():
 
 		return phrases
 
+	def get_phrase_text(self, nodes, index):
+		parent_indentation = nodes[index][:nodes[index].find('(')]
+		child_indentation = parent_indentation + '  '
+		phrase_text = ''
+		for child in nodes[index + 1:]:
+			# If current node is no longer part of the subtree, stop
+			if not child.startswith(child_indentation):
+				break
 
+			node_leaves = child.strip().split()
+			# Skip to deeper node if node does not contain leaves
+			# i.e. only contains itself
+			if len(node_leaves) == 1:
+				continue
+
+			for node_leaf in node_leaves[1:]:
+				# Remove all parentheses from leaf
+				while node_leaf.startswith('('):
+					node_leaf = node_leaf.lstrip('(')
+				while node_leave.endswith(')'):
+					node_leaf = node_leaf.rstrip(')')
+				node_leaf_text = node_leaf.split()[1]
+				phrase_text.append(node_leaf_text)
+
+		return phrase_text
