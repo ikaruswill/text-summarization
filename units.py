@@ -106,7 +106,6 @@ class Paragraph():
 			return 0
 
 class PhraseMatrix(dict):
-
 	def __init__(self, *args):
 		super().__init__(self, *args)
 
