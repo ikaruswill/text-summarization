@@ -110,44 +110,48 @@ class PhraseMatrix(dict):
 	def __init__(self, *args):
 		super().__init__(self, *args)
 
-	def __getitem__(self, phrase1, phrase2):
-		assert isinstance(phrase1, Phrase)
-		assert isinstance(phrase2, Phrase)
-
-		key = ''
-		if phrase1.is_NP:
-			key += 'NP_'
-		else:
-			key += 'VP_'
-
-		key += phrase1.phrase_id + ':'
-
-		if phrase2.is_NP:
-			key += 'NP_'
-		else:
-			key += 'VP_'
-
-		key += phrase2.phrase_id
-
-		return super().__getitem__(self, key)
-
-	def __setitem__(self, phrase1, phrase2):
-		assert isinstance(phrase1, Phrase)
-		assert isinstance(phrase2, Phrase)
+	def __getitem__(self, phrase_tuple):
+		assert isinstance(phrase_tuple, tuple)
+		assert len(phrase_tuple) == 2
+		assert isinstance(phrase_tuple[0], Phrase)
+		assert isinstance(phrase_tuple[1], Phrase)
 		
 		key = ''
-		if phrase1.is_NP:
+		if phrase_tuple[0].is_NP:
 			key += 'NP_'
 		else:
 			key += 'VP_'
 
-		key += phrase1.phrase_id + ':'
+		key += str(phrase_tuple[0].phrase_id) + ':'
 
-		if phrase2.is_NP:
+		if phrase_tuple[1].is_NP:
 			key += 'NP_'
 		else:
 			key += 'VP_'
 
-		key += phrase2.phrase_id
+		key += str(phrase_tuple[1].phrase_id)
 
-		super().__setitem__(self, key)
+		return super().__getitem__(key)
+
+	def __setitem__(self, phrase_tuple, value):
+		assert isinstance(phrase_tuple, tuple)
+		assert len(phrase_tuple) == 2
+		assert isinstance(phrase_tuple[0], Phrase)
+		assert isinstance(phrase_tuple[1], Phrase)
+		
+		key = ''
+		if phrase_tuple[0].is_NP:
+			key += 'NP_'
+		else:
+			key += 'VP_'
+
+		key += str(phrase_tuple[0].phrase_id) + ':'
+
+		if phrase_tuple[1].is_NP:
+			key += 'NP_'
+		else:
+			key += 'VP_'
+
+		key += str(phrase_tuple[1].phrase_id)
+
+		super().__setitem__(key, value)
