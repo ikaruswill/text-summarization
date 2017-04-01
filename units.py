@@ -103,13 +103,3 @@ class Paragraph():
 			return concept_frequency[concept]
 		else:
 			return 0
-
-def main():
-	t = "This is my question; what   _ yeah"
-	p = Phrase(t, False)
-	print(p.get_word_length())
-
-	print(repr(t.split()))
-
-if __name__ == '__main__':
-	main()

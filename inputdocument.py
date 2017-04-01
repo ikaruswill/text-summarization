@@ -7,11 +7,11 @@ import re
 class InputDocument():
 	__p_marker = '\n\n'
 
-	def __init__(self, input_str, isTAC=True):
+	def __init__(self, input_str, is_tac=True):
 		full_annotator_list = ["tokenize", "ssplit", "pos", "lemma", "ner", "parse", "dcoref"]
 		cn = pywrap.CoreNLP(url='http://localhost:9000', annotator_list=full_annotator_list)
 		
-		if isTAC:
+		if is_tac:
 			text = self.parse_xml_string(input_str)
 		else:
 			text = input_str
