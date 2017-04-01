@@ -103,3 +103,50 @@ class Paragraph():
 			return concept_frequency[concept]
 		else:
 			return 0
+
+class PhraseMatrix(dict):
+
+	def __init__(self, *args):
+		super().__init__(self, *args)
+
+	def __getitem__(self, phrase1, phrase2):
+		assert isinstance(phrase1, Phrase)
+		assert isinstance(phrase2, Phrase)
+
+		key = ''
+		if phrase1.is_NP:
+			key += 'NP_'
+		else:
+			key += 'VP_'
+
+		key += phrase1.phrase_id + ':'
+
+		if phrase2.is_NP:
+			key += 'NP_'
+		else:
+			key += 'VP_'
+
+		key += phrase2.phrase_id
+
+		return super().__getitem__(self, key)
+
+	def __setitem__(self, phrase1, phrase2):
+		assert isinstance(phrase1, Phrase)
+		assert isinstance(phrase2, Phrase)
+		
+		key = ''
+		if phrase1.is_NP:
+			key += 'NP_'
+		else:
+			key += 'VP_'
+
+		key += phrase1.phrase_id + ':'
+
+		if phrase2.is_NP:
+			key += 'NP_'
+		else:
+			key += 'VP_'
+
+		key += phrase2.phrase_id
+
+		super().__setitem__(self, key)
