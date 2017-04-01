@@ -69,6 +69,10 @@ class PhraseExtractor():
 						if not child.startswith('      '):
 							break
 
+						# If current node is a child of the direct child, skip
+						if not child.startswith('      ('):
+							continue
+
 						# If is child of current node and is VP
 						if child.strip().startswith('(VP'):
 							sub_VP_count += 1
@@ -81,6 +85,10 @@ class PhraseExtractor():
 					# If current node is no longer part of the subtree, stop
 					if not child.startswith('      '):
 						break
+
+					# If current node is a child of the direct child, skip
+					if not child.startswith('      ('):
+						continue
 
 					if is_not_VP and child.strip().startswith('(NP') \
 					or if is_VP and child.strip().startswith('(VP'):
