@@ -1,5 +1,5 @@
 from nltk.util import ngrams
-from nltk.tokenize import word_tokenize, sent_tokenize
+import nltk.tokenize
 from nltk.corpus import stopwords
 
 def load_file(file_path):
@@ -10,8 +10,11 @@ def load_file(file_path):
 def count_words(text):
 	return len(text.split())
 
-def tokenize(text):
-	return word_tokenize(text)
+def word_tokenize(text):
+	return nltk.tokenize.word_tokenize(text)
+
+def sent_tokenize(text):
+	return nltk.tokenize.sent_tokenize(text)
 
 def generate_bigrams(tokens):
 	return [' '.join(bigram) for bigram in ngrams(tokens, 2)]
