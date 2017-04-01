@@ -90,6 +90,8 @@ class PhraseExtractor():
 					if not child.startswith('      ('):
 						continue
 
+					# If l2 node is NP and l1 node is S, SBAR or NP
+					# If l2 node is VP and l1 node is VP
 					if is_not_VP and child.strip().startswith('(NP') \
 					or if is_VP and child.strip().startswith('(VP'):
 						subphrase_content = get_phrase_text(parse_tree, i)
@@ -99,6 +101,7 @@ class PhraseExtractor():
 						subphrase.sentence_length = sentence_length
 						phrases.append(subphrase)
 		
+		# Set l1 NPs and VPs to l1 sentence length excluding ignored elements
 		for l1_npvp in l1_npvps:
 			l1_npvp.sentence_length = s_length
 
