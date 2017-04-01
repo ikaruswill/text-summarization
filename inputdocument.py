@@ -18,11 +18,12 @@ class InputDocument():
 
 		# Note: corenlp recognizes sentences delimiters as periods regardless of newlines
 		result = cn.basic(text, out_format='json').json()
+		self.sentences = utility.sent_tokenize(text)
+		self.parse_trees = [sentence['parse'] for sentence in result['sentences']]
 		self.named_entities = self.extract_named_entities(result)
 		self.coreferences = self.extract_coreferences(result)
 		self.word_to_lemma_dict = self.build_word_to_lemma_dict(result)
 		self.paragraphs = self.prepare_paragraphs(text, result)
-		self.sentences = utility.sent_tokenize(text)
 
 	def parse_xml_string(self, xml_string):
 		root = xml.etree.ElementTree.fromstring(xml_string)
