@@ -1,4 +1,4 @@
-
+import utility
 
 class PhraseExtractor():
 	def __init__(self, input_document, phrase_matrix):
@@ -9,12 +9,17 @@ class PhraseExtractor():
 		all_phrases = []
 		sentences = input_document.sentences
 
-		for sentence in sentences:
-			phrases_in_sentence = extract_phrases(sentence)
+		for i, sentence in enumerate(sentences):
+			phrases_in_sentence = self.extract_phrases(input_document.parse_trees[i], utility.count_words(sentence))
 
-			# ADD ALL PHRASES FROM PHRASES IN SENTENCE
-
-			# SET INDICATOR MATRIX
+			all_phrases.append(phrases_in_sentence)
+			for i in range(0, len(phrases_in_sentence) - 1):
+				a = phrases_in_sentence[i]
+				for j in range(i + 1, len(phrases_in_sentence)):
+					b = phrases_in_sentence[j]
+					if a.is_NP and not b.is_NP and a.sentence_node_id == b.sentence_node_id:
+						phrase_matrix[(a,b)] = 1
+		return all_phrases
 		
 	def extract_phrases(self, parse_tree, sentence_length):
 		phrases = []
