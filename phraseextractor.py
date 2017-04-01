@@ -64,7 +64,7 @@ class PhraseExtractor():
 						continue
 
 					sub_VP_count = 0
-					for child in nodes[i:]:
+					for child in nodes[i + 1:]:
 						# If current node is no longer part of the subtree, stop
 						if not child.startswith('      '):
 							break
@@ -77,7 +77,7 @@ class PhraseExtractor():
 					if sub_VP_count < 2: 
 						continue
 
-				for child in nodes[i:]:
+				for child in nodes[i + 1:]:
 					# If current node is no longer part of the subtree, stop
 					if not child.startswith('      '):
 						break
