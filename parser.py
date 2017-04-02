@@ -366,3 +366,14 @@ class Parser():
 		self.find_alt_VPs(self.verb_phrases)
 		self.build_compatibility_matrix()
 		return self.start_optimization()
+
+	def update_model(self):
+		self.noun_phrases = self.processor.noun_phrases
+		self.verb_phrases = self.processor.verb_phrases
+		self.all_phrases = self.processor.all_phrases
+		self.corefs = self.processor.corefs
+		self.nouns = self.processor.nouns
+		self.verbs = self.processor.verbs
+		self.docs = self.processor.docs
+
+
