@@ -3,6 +3,7 @@ from documentprocessor import DocumentProcessor
 import gurobipy as g
 import sys
 import argparse
+import os
 
 class Parser():
 	DEFAULT_MAXIMUM_SENTENCE = 10;
@@ -383,7 +384,20 @@ class Parser():
 
 
 def main():
-	pass
+	parser = Parser()
+	for dirpath, dirnames, filenames in os.walk(args.input_dir):
+		for filename in filenames:
+			if filename.startswith('.'):
+				continue
+			file_path = os.path.join(dirpath, filename)
+			text = utility.load_file(file_path)
+			parser.processDocument(text)
+
+		parser.update_model()
+		summary = parser.generate_summary()
+		print(summary)
+
+	
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Abstractive Summarizer')
