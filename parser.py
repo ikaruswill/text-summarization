@@ -238,7 +238,28 @@ class Parser():
 			summary += sentence + '\n'
 
 		return summary
-		
+
+	def add_NP_validity_constraint(self, model):
+		for np in self.noun_phrases:
+			np_var = self.noun_variables[np.phrase_id]
+			constraint = LinExpr()
+
+			for vp in self.verb_phrases:
+				if self.compatibility_matrix[(np, vp)] == 1:
+					key = 'gamma:' + self.build_key(np, vp)
+					var = self.gamma_variables[key]
+
+					expr = LinExpr()
+					expr.addTerms(1.0, np_var)
+					expr.addTerms(-1.0, var)
+
+					model.addConstr(expr, GRB.GREATER_EQUAL, 0.0, 'np_validity:' + noun.phrase_id)
+
+					constraint.addTerms(1.0, var)
+
+			constraint.addTerms(-1.0, np_var)
+			model.addConstr(constraint, GRB.GREATER_EQUAL, 0.0, 'np_validity:' + noun.phrase_id)
+
 	def add_VP_validity_constraint(self, model):
 		for vp in self.verb_phrases:
 			vp_var = self.verb_variables[vp.phrase_id]
@@ -271,7 +292,7 @@ class Parser():
 					model.addConstr(expr, GRB.LESS_EQUAL, 1.0, 'i_within_i' + \
 						phrase1.is_NP + ':' + phrase1.phrase_id + phrase2.phrase_id)
 
-	
+
 			
 	def build_key(phrase1, phrase2):
 		return phrase1.phrase_id + ':' + phrase2.phrase_id
