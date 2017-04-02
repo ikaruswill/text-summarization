@@ -53,3 +53,22 @@ class Parser():
 			for phrase in self.all_phrases:
 				score = scorer.score_phrases(phrase)
 				phrase.score += score
+
+	def find_alt_NPs(self, noun_phrases, clusters):
+		for cluster in clusters:
+			alt_phrases = []
+
+			for phrase_text in cluster:
+				for phrase in noun_phrases:
+					if phrase.content == phrase_text:
+						alt_phrases.append(phrase)
+
+			len_alt_phrases = len(alt_phrases)
+			for i in range(0, len_alt_phrases - 1):
+				for j in range(0, len_alt_phrases):
+					phrase1 = alt_phrases[i]
+					phrase2 = alt_phrases[j]
+					self.alternative_NPs[(phrase1, phrase2)] = 1
+					self.alternative_NPs[(phrase2, phrase1)] = 1
+
+	
