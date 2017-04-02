@@ -292,6 +292,33 @@ class Parser():
 					model.addConstr(expr, GRB.LESS_EQUAL, 1.0, 'i_within_i' + \
 						phrase1.is_NP + ':' + phrase1.phrase_id + phrase2.phrase_id)
 
+	def add_phrase_coocurrence_constraint(model, phrases, variables, linking_variables):
+		for i in range(0, phrases - 1):
+			phrase_i = phrases[i]
+			var_i = variables[phrase_i.phrase_id]
+
+			for j in range(i + 1, phrases):
+				phrase_j = phrases[j]
+				var_j = variables[phrase_j.phrase_id]
+				key = self.build_key(phrase_i, phrase_j)
+				var_ij = linking_variables[key]
+
+				expr = LinExpr()
+				expr.addTerms(1.0, var_ij)
+				expr.addTerms(-1.0, var_i)
+				model.addConstr(expr, GRB.LESS_EQUAL, 0.0, "phrase_coocurrence_1:" + phrase_i.isNP + key)
+
+				expr = LinExpr()
+				expr.addTerms(1.0, var_ij)
+				expr.addTerms(-1.0, var_j)
+				model.addConstr(expr, GRB.LESS_EQUAL, 0.0, "phrase_coocurrence_2:" + phrase_i.isNP + key)
+
+				expr = LinExpr()
+				expr.addTerms(1.0, var_i)
+				expr.addTerms(1.0, var_j)
+				expr.addTerms(-1.0 var_ij)
+				model.addConstr(expr, GRB.LESS_EQUAL, 1.0, "phrase_coocurrence_3:" + phrase_i.isNP + key)
+				
 
 			
 	def build_key(phrase1, phrase2):
