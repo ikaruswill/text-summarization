@@ -376,4 +376,13 @@ class Parser():
 		self.verbs = self.processor.verbs
 		self.docs = self.processor.docs
 
+	def generate_summary(self):
+		self.score_phrases()
+		self.find_optimal_solution()
 
+
+def main():
+	pass
+
+if __name__ == '__main__':
+	main()
