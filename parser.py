@@ -337,7 +337,13 @@ class Parser():
 
 				model.addConstr(expr, GRB.EQUAL, 0.0, "short_sent_avoidance:" + vp.phrase_id)
 
-	
+	def add_pronoun_avoidance_constraint(model):
+		for np in self.noun_phrases:
+			if np.is_pronoun:
+				var = self.noun_variables[np.phrase_id]
+				expr = LinExpr()
+				expr.addTerms(1.0, var)
+				model.addConstr(expr, GRB.EQUAL, 0.0, "pronoun_avoidance:" + np.phrase_id)
 
 	def build_key(phrase1, phrase2):
 		return phrase1.phrase_id + ':' + phrase2.phrase_id
