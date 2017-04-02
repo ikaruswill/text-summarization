@@ -71,4 +71,14 @@ class Parser():
 					self.alternative_NPs[(phrase1, phrase2)] = 1
 					self.alternative_NPs[(phrase2, phrase1)] = 1
 
-	
+	def find_alt_VPs(self, verb_phrases):
+		len_verb_phrases = len(verb_phrases)
+		for i in range(0, len_alt_phrases - 1):
+			for j in range(0, len_alt_phrases):
+				phrase1 = verb_phrases[i]
+				phrase2 = verb_phrases[j]
+
+				d = calculate_jaccard_index(phrase1, phrase2)
+				if d >= self.alternative_vp_threshold:
+					self.alternative_VPs[(phrase1, phrase2)] = d
+					self.alternative_VPs[(phrase2, phrase1)] = d
