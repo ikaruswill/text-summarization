@@ -327,7 +327,18 @@ class Parser():
 			expr.addTerm(1.0, var)
 
 		model.addConstr(expr, GRB.LESS_EQUAL, k, "sentence_number")
-			
+	
+	def add_short_sentence_avoidance_constraint(model, m):
+		for vp in self.verb_phrases:
+			if vp.sentence_length < m or vp.word_length < self.MINIMUM_VERB_LENGTH:
+				var = self.verb_variables[vp.phrase_id]
+				expr = LinExpr()
+				expr.addTerms(1.0, var)
+
+				model.addConstr(expr, GRB.EQUAL, 0.0, "short_sent_avoidance:" + vp.phrase_id)
+
+	
+
 	def build_key(phrase1, phrase2):
 		return phrase1.phrase_id + ':' + phrase2.phrase_id
 
