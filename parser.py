@@ -51,6 +51,13 @@ class Parser():
 				return True
 		return False
 
+	def calculate_similarity(self, phrase1, phrase2):
+		for coref_set in self.corefs.values():
+			if a.content in coref_set and b.content in coref_set:
+				return 1.0
+
+		return self.calculate_jaccard_index(phrase1, phrase2)
+
 	def calculate_jaccard_index(self, phrase1, phrase2):
 		concepts_phrase1 = phrase1.concepts
 		concepts_phrase2 = phrase2.concepts
