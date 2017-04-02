@@ -1,4 +1,5 @@
 from phraseextractor import PhraseExtractor
+from units import InputDocument
 
 class DocumentProcessor():
 	def __init__(self, is_tac, indicator_matrix):

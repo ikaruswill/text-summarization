@@ -1,4 +1,5 @@
 import utility
+from units import InputDocument
 
 class PhraseExtractor():
 	def __init__(self, input_document, indicator_matrix):
@@ -7,10 +8,10 @@ class PhraseExtractor():
 
 	def extract_all_phrases(self):
 		all_phrases = []
-		sentences = input_document.sentences
+		sentences = self.input_document.sentences
 
 		for i, sentence in enumerate(sentences):
-			phrases_in_sentence = self.extract_phrases(input_document.parse_trees[i], utility.count_words(sentence))
+			phrases_in_sentence = self.extract_phrases(self.input_document.parse_trees[i], utility.count_words(sentence))
 
 			all_phrases.append(phrases_in_sentence)
 			len_sentences = len(sentences)
