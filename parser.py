@@ -85,7 +85,7 @@ class Parser():
 
 			len_alt_phrases = len(alt_phrases)
 			for i in range(0, len_alt_phrases - 1):
-				for j in range(0, len_alt_phrases):
+				for j in range(i + 1, len_alt_phrases):
 					phrase1 = alt_phrases[i]
 					phrase2 = alt_phrases[j]
 					self.alternative_NPs[(phrase1, phrase2)] = 1
@@ -94,7 +94,7 @@ class Parser():
 	def find_alt_VPs(self, verb_phrases):
 		len_verb_phrases = len(verb_phrases)
 		for i in range(0, len_alt_phrases - 1):
-			for j in range(0, len_alt_phrases):
+			for j in range(i + 1, len_alt_phrases):
 				phrase1 = verb_phrases[i]
 				phrase2 = verb_phrases[j]
 
