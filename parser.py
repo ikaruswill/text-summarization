@@ -1,5 +1,7 @@
 from units import PhraseMatrix
 from documentprocessor import DocumentProcessor
+import gurobipy as g
+import sys
 
 class Parser():
 	DEFAULT_MAXIMUM_SENTENCE = 10;
@@ -166,6 +168,86 @@ class Parser():
 
 		model.update()
 		model.setObjective(expr, GRB.MAXIMIZE)
+
+		# Add constraints
+		add_NP_validity(model)
+		add_VP_validity(model)
+		add_not_I_within_I(model, self.noun_phrases, self.noun_variables)
+		add_not_I_within_I(model, self.verb_phrases, self.verb_variables)
+		add_phrase_cooccurence(model, self.noun_phrases, self.noun_variables, self.noun_to_noun_variables)
+		add_phrase_cooccurence(model, self.verb_phrases, self.verb_variables, self.verb_to_verb_variables)
+		add_sentence_number(model, self.max_sentence)
+		add_short_sentence_avoidance(model, self.MIN_SENTENCE_LENGTH)
+		add_pronoun_avoidance(model)
+		add_length(model)
+
+		model.optimize()
+
+		selected_nouns = {}
+		selected_verbs = {}
+
+		for np in self.noun_phrases:
+			var = noun_variables[np.phrase_id]
+			selected = var.X
+
+			if selected > 0:
+				selected_nouns[np.phrase_id] = phrase
+
+		for vp in self.verb_phrases:
+			var = verb_variables[vp.phrase_id]
+			selected = var.X
+
+			if selected > 0:
+				selected_verbs[vp.phrase_id] = phrase
+
+		selected_NP_lists = {}
+		summary_sentences = {} # Sorted
+
+		for key, var in gamma_variables.items():
+			value = var.X
+
+			if value > 0:
+				data = key.split(':')
+				noun_id = int(data[0])
+				verb_id = int(data[1])
+
+				if not noun_id in selected_NP_lists:
+					selected_NP_lists[noun_id] = []
+
+				selected_NP_lists[noun_id].append(selected_verbs[verb_id])
+
+		summary = ""
+
+		for key, np_list in selected_NP_lists:
+			np = selected_nouns[key]
+			sentence = np.content + " "
+			min_id = sys.maxsize
+
+			verbs = []
+			self.phrases.sort(key=lambda x: operator.attrgetter('phrase_id'))
+
+			for phrase in self.phrases:
+				if not phrase.is_NP and min_id > phrase.phrase_id:
+					mind_id = phrase.phrase_id
+				verbs.append(phrase.content)
+
+			sentence += ', '.join(verbs)
+			summary_sentences[min_id] = sentence
+
+		for key, sentence in sorted(summary_sentences.items()):
+			summary += sentence + '\n'
+
+		return summary
+		
+	def add_VP_validity_constraint(self, model):
+		for phrase in verb_phrases:
+			verbVar = GRBVar(0.0, sys.maxsize, phrase.phrase_id, 'GRB.INTEGER', 'verb_var')
+			constraint = GRBLinExpr()
+			
+	def build_key(phrase1, phrase2):
+		return phrase1.phrase_id + ':' + phrase2.phrase_id
+
+
 	def find_optimal_solution(self):
 		self.find_alt_VPs(self.noun_phrases, self.corefs.values())
 		self.find_alt_VPs(self.verb_phrases)
