@@ -42,7 +42,7 @@ class Parser():
 				if not related and (np, vp) in self.indicator_matrix
 					related = True
 
-				compatibility_matrix[(np, vp)] = int(related)
+				self.compatibility_matrix[(np, vp)] = int(related)
 
 	def check_relation(phrase1, phrase2, other_phrase1s, alt_phrase1s):
 		for other_phrase1 in other_phrase1s:
