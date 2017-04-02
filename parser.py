@@ -49,7 +49,7 @@ class Parser():
 				if not related:
 					related = self.check_relation(vp, np, self.verb_phrases, self.alternative_VPs)
 
-				if not related and (np, vp) in self.indicator_matrix
+				if not related and (np, vp) in self.indicator_matrix:
 					related = True
 
 				self.compatibility_matrix[(np, vp)] = int(related)
@@ -129,7 +129,7 @@ class Parser():
 
 		for np in self.noun_phrases:
 			var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n:" + noun.phrase_id)
-			noun_variables.[noun.phrase_id] = var
+			noun_variables[noun.phrase_id] = var
 			expr.addTerm(noun.score, var)
 
 			for vp in self.verb_phrases:
@@ -318,7 +318,7 @@ class Parser():
 				expr = LinExpr()
 				expr.addTerms(1.0, var_i)
 				expr.addTerms(1.0, var_j)
-				expr.addTerms(-1.0 var_ij)
+				expr.addTerms(-1.0, var_ij)
 				model.addConstr(expr, GRB.LESS_EQUAL, 1.0, "phrase_coocurrence_3:" + phrase_i.isNP + key)
 				
 	def add_sentence_number_constraint(model, k):
@@ -401,14 +401,14 @@ def main():
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Abstractive Summarizer')
-	parser.AddArgument('input_dir', help='input folder containing all text files')
-	parser.AddArgument('out_file', help='output file')
-	parser.AddArgument('-w', '--word-length', help='maximum word length', default=DEFAULT_MAX_WORD_LENGTH)
-	parser.AddArgument('-v', '--vp-thresh', help='alternative VP threshold', default=DEFAULT_ALTERNATIVE_VP_THRESHOLD)
-	parser.AddArgument('-s', '--max-sent', help='maximum number of sentences', default=DEFAULT_MAXIMUM_SENTENCE)
-	parser.AddArgument('-t', '--threads', help='number of threads', default=0)
-	parser.AddArgument('-p', '--plaintext', help='is plain text data', default=False, action='store_true')
-	parser.AddArgument('-e', '--export-only', help='only export the phrases', default=False)
+	parser.add_argument('input_dir', help='input folder containing all text files')
+	parser.add_argument('out_file', help='output file')
+	parser.add_argument('-w', '--word-length', help='maximum word length', default=DEFAULT_MAX_WORD_LENGTH)
+	parser.add_argument('-v', '--vp-thresh', help='alternative VP threshold', default=DEFAULT_ALTERNATIVE_VP_THRESHOLD)
+	parser.add_argument('-s', '--max-sent', help='maximum number of sentences', default=DEFAULT_MAXIMUM_SENTENCE)
+	parser.add_argument('-t', '--threads', help='number of threads', default=0)
+	parser.add_argument('-p', '--plaintext', help='is plain text data', default=False, action='store_true')
+	parser.add_argument('-e', '--export-only', help='only export the phrases', default=False)
 	args = parser.parse_args()
 
 	main()

@@ -99,7 +99,7 @@ class PhraseExtractor():
 					# If l2 node is NP and l1 node is S, SBAR or NP
 					# If l2 node is VP and l1 node is VP
 					if is_not_VP and child.strip().startswith('(NP') \
-					or if is_VP and child.strip().startswith('(VP'):
+					or is_VP and child.strip().startswith('(VP'):
 						subphrase_content = get_phrase_text(nodes, i)
 						subphrase = Phrase(subphrase_content, is_not_VP, phrase.phrase_id, sentence_node_id)
 						subphrase.concepts = self.input_document.extract_concepts_from_string(subphrase_content)
