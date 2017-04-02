@@ -253,10 +253,28 @@ class Parser():
 					contraint.addTerms(1.0, var)
 
 			model.addConstr(constr, GRB.EQUAL, 0.0, 'vp_legality:' + vp.phrase_id)
+
+	def add_not_I_within_I_constraint(model, phrases, variables):
+		len_phrases = len(phrases)
+		for i in range(0, len_phrases - 1):
+			for j in range(i + 1, len_phrases):
+				phrase1 = phrases[i]
+				phrase2 = phrases[j]
+				if phrase1.phrase_id == phrase.parent_id:
+					var1 = variables[phrase1.phrase_id]
+					var2 = variables[phrase2.phrase_id]
+
+					expr = LinExpr()
+					expr.addTerm(1.0, var1)
+					expr.addTerm(1.0, var2)
+
+					model.addConstr(expr, GRB.LESS_EQUAL, 1.0, 'i_within_i' + \
+						phrase1.is_NP + ':' + phrase1.phrase_id + phrase2.phrase_id)
+
+	
 			
 	def build_key(phrase1, phrase2):
 		return phrase1.phrase_id + ':' + phrase2.phrase_id
-
 
 	def find_optimal_solution(self):
 		self.find_alt_VPs(self.noun_phrases, self.corefs.values())
