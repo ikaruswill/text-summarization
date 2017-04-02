@@ -31,6 +31,26 @@ class Parser():
 
 		self.processor = DocumentProcessor()
 
+	def build_compatibility_matrix(self):
+		for np in self.noun_phrases:
+			for vp in self.verb_phrases:
+				related = self.check_relation(np, vp, self.noun_phrases, self.alternative_NPs)
+				
+				if not related:
+					related = self.check_relation(vp, np, self.verb_phrases, self.alternative_VPs)
+
+				if not related and (np, vp) in self.indicator_matrix
+					related = True
+
+				compatibility_matrix[(np, vp)] = int(related)
+
+	def check_relation(phrase1, phrase2, other_phrase1s, alt_phrase1s):
+		for other_phrase1 in other_phrase1s:
+			if (phrase1, other_phrase1) in alt_phrase1s \
+			and (other_phrase1, phrase2) in self.indicator_matrix:
+				return True
+		return False
+
 	def calculate_jaccard_index(self, phrase1, phrase2):
 		concepts_phrase1 = phrase1.concepts
 		concepts_phrase2 = phrase2.concepts
