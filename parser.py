@@ -240,9 +240,19 @@ class Parser():
 		return summary
 		
 	def add_VP_validity_constraint(self, model):
-		for phrase in verb_phrases:
-			verbVar = GRBVar(0.0, sys.maxsize, phrase.phrase_id, 'GRB.INTEGER', 'verb_var')
-			constraint = GRBLinExpr()
+		for vp in self.verb_phrases:
+			vp_var = self.verb_variables[vp.phrase_id]
+			constraint = LinExpr()
+			contraint.addTerms(-1.0, vp_var)
+
+			for np in self.noun_phrases:
+				if self.compatibility_matrix[(np, vp)] == 1:
+					key = 'gamma:' + self.build_key(np, vp)
+					var = self.gamma_variables[key]
+
+					contraint.addTerms(1.0, var)
+
+			model.addConstr(constr, GRB.EQUAL, 0.0, 'vp_legality:' + vp.phrase_id)
 			
 	def build_key(phrase1, phrase2):
 		return phrase1.phrase_id + ':' + phrase2.phrase_id
