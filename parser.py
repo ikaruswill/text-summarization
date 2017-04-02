@@ -2,6 +2,7 @@ from units import PhraseMatrix
 from documentprocessor import DocumentProcessor
 import gurobipy as g
 import sys
+import argparse
 
 class Parser():
 	DEFAULT_MAXIMUM_SENTENCE = 10;
@@ -385,4 +386,15 @@ def main():
 	pass
 
 if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description='Abstractive Summarizer')
+	parser.AddArgument('input_dir', help='input folder containing all text files')
+	parser.AddArgument('out_file', help='output file')
+	parser.AddArgument('-w', '--word-length', help='maximum word length', default=DEFAULT_MAX_WORD_LENGTH)
+	parser.AddArgument('-v', '--vp-thresh', help='alternative VP threshold', default=DEFAULT_ALTERNATIVE_VP_THRESHOLD)
+	parser.AddArgument('-s', '--max-sent', help='maximum number of sentences', default=DEFAULT_MAXIMUM_SENTENCE)
+	parser.AddArgument('-t', '--threads', help='number of threads', default=0)
+	parser.AddArgument('-p', '--plaintext', help='is plain text data', default=False, action='store_true')
+	parser.AddArgument('-e', '--export-only', help='only export the phrases', default=False)
+	args = parser.parse_args()
+
 	main()
