@@ -319,7 +319,14 @@ class Parser():
 				expr.addTerms(-1.0 var_ij)
 				model.addConstr(expr, GRB.LESS_EQUAL, 1.0, "phrase_coocurrence_3:" + phrase_i.isNP + key)
 				
+	def add_sentence_number_constraint(model, k):
+		expr = LinExpr()
 
+		for np in self.noun_phrases:
+			var = self.noun_variables[np.phrase_id]
+			expr.addTerm(1.0, var)
+
+		model.addConstr(expr, GRB.LESS_EQUAL, k, "sentence_number")
 			
 	def build_key(phrase1, phrase2):
 		return phrase1.phrase_id + ':' + phrase2.phrase_id
