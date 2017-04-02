@@ -408,7 +408,7 @@ if __name__ == '__main__':
 	parser.add_argument('-s', '--max-sent', help='maximum number of sentences', default=DEFAULT_MAXIMUM_SENTENCE)
 	parser.add_argument('-t', '--threads', help='number of threads', default=0)
 	parser.add_argument('-p', '--plaintext', help='is plain text data', default=False, action='store_true')
-	parser.add_argument('-e', '--export-only', help='only export the phrases', default=False)
+	parser.add_argument('-e', '--export-only', help='only export the phrases', default=False, action='store_true')
 	args = parser.parse_args()
 
 	main()
