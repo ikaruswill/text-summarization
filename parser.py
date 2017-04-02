@@ -33,7 +33,7 @@ class Parser():
 		self.verb_variables = {}
 		self.gamma_variables = {}
 		self.noun_to_noun_variables = {}
-		self.verb_to_verb_variabvles = {}
+		self.verb_to_verb_variables = {}
 
 		self.processor = DocumentProcessor()
 
