@@ -116,6 +116,56 @@ class Parser():
 					self.alternative_VPs[(phrase1, phrase2)] = d
 					self.alternative_VPs[(phrase2, phrase1)] = d
 
+	def start_optimization(self):
+		env = g.Env()
+		env.Params.Threads = self.threads
+		model = g.Model(env=env)
+
+		expr = g.LinExpr()
+
+		for np in self.noun_phrases:
+			var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n:" + noun.phrase_id)
+			noun_variables.[noun.phrase_id] = var
+			expr.addTerm(noun.score, var)
+
+			for vp in self.verb_phrases:
+				if compatibility_matrix[(np, vp)] == 1:
+					key = 'gamma:' + self.build_key(np, vp)
+					gamma = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, key)
+
+					gamma_variables[key] = gamma
+
+		for vp in self.verb_phrases:
+			var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "v:" + verb.phrase_id)
+			verb_variables[vp.phrase_id] = var
+			expr.addTerm(vp.score, var)
+
+		len_noun_phrases = len(self.noun_phrases)
+		for i in range(0, len_noun_phrases - 1):
+			for j in range(i + 1, len_noun_phrases):
+				np1 = self.noun_phrases[i]
+				np2 = self.noun_phrases[j]
+				key = self.build_key(np1, np2)
+
+				var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n2n:" + key)
+				noun_to_noun_variables[key] = var
+				score = -(np1.score + np2.score) * self.calculate_similarity(np1, np2)
+				expr.addTerm(score, var)
+
+		len_verb_phrases = len(self.verb_phrases)
+		for i in range(0, len_verb_phrases - 1):
+			for j in range(i + 1, len_verb_phrases):
+				vp1 = self.verb_phrases[i]
+				vp2 = self.verb_phrases[j]
+				key = self.build_key(vp1, vp2)
+
+				var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "v2v:" + key)
+				verb_to_verb_variables[key] = var
+				score = -(vp1.getScore() + vp2.getScore()) * self.calculate_similarity(vp1, vp2)
+				expr.addTerm(score, var)
+
+		model.update()
+		model.setObjective(expr, GRB.MAXIMIZE)
 	def find_optimal_solution(self):
 		self.find_alt_VPs(self.noun_phrases, self.corefs.values())
 		self.find_alt_VPs(self.verb_phrases)
