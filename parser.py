@@ -31,7 +31,7 @@ class Parser():
 
 		self.processor = DocumentProcessor()
 
-	def calculate_jaccard_index(phrase1, phrase2):
+	def calculate_jaccard_index(self, phrase1, phrase2):
 		concepts_phrase1 = phrase1.concepts
 		concepts_phrase2 = phrase2.concepts
 
@@ -46,3 +46,10 @@ class Parser():
 			return 0.0
 		else:
 			return float(count) / divisor
+
+	def score_phrases(self):
+		for doc in self.docs:
+			scorer = PhraseScorer(doc)
+			for phrase in self.all_phrases:
+				score = scorer.score_phrases(phrase)
+				phrase.score += score
