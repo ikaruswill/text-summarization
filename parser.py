@@ -102,3 +102,9 @@ class Parser():
 				if d >= self.alternative_vp_threshold:
 					self.alternative_VPs[(phrase1, phrase2)] = d
 					self.alternative_VPs[(phrase2, phrase1)] = d
+
+	def find_optimal_solution(self):
+		self.find_alt_VPs(self.noun_phrases, self.corefs.values())
+		self.find_alt_VPs(self.verb_phrases)
+		self.build_compatibility_matrix()
+		return self.start_optimization()
