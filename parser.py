@@ -4,16 +4,18 @@ import gurobipy as g
 import sys
 import argparse
 import os
+import utility
 
-DEFAULT_MAXIMUM_SENTENCE = 10;
-DEFAULT_ALTERNATIVE_VP_THRESHOLD = 0.75;
-DEFAULT_MAX_WORD_LENGTH = 100;
+DEFAULT_MAXIMUM_SENTENCE = 10
+DEFAULT_ALTERNATIVE_VP_THRESHOLD = 0.75
+DEFAULT_MAX_WORD_LENGTH = 100
+DEFAULT_THREADS = 0
 
 class Parser():
-	MIN_SENTENCE_LENGTH = 5;
-	MINIMUM_VERB_LENGTH = 2;
+	MIN_SENTENCE_LENGTH = 5
+	MINIMUM_VERB_LENGTH = 2
 
-	def __init__(self, max_sentence, alternative_vp_threshold, max_word_length, is_TAC, threads=1):
+	def __init__(self, max_sentence, alternative_vp_threshold, max_word_length, is_tac, threads):
 		self.max_sentence = max_sentence
 		self.alternative_vp_threshold = alternative_vp_threshold
 		self.max_word_length = max_word_length
@@ -40,7 +42,7 @@ class Parser():
 		self.noun_to_noun_variables = {}
 		self.verb_to_verb_variables = {}
 
-		self.processor = DocumentProcessor()
+		self.processor = DocumentProcessor(is_tac, self.indicator_matrix)
 
 	def build_compatibility_matrix(self):
 		for np in self.noun_phrases:
@@ -383,16 +385,19 @@ class Parser():
 		self.score_phrases()
 		self.find_optimal_solution()
 
+	def process_document(self, string):
+		self.processor.process_document(string)
+
 
 def main():
-	parser = Parser()
+	parser = Parser(args.max_sent, args.alt_vp_thresh, args.max_word_length, not args.plaintext, args.threads)
 	for dirpath, dirnames, filenames in os.walk(args.input_dir):
 		for filename in filenames:
 			if filename.startswith('.'):
 				continue
 			file_path = os.path.join(dirpath, filename)
 			text = utility.load_file(file_path)
-			parser.processDocument(text)
+			parser.process_document(text)
 
 		parser.update_model()
 		summary = parser.generate_summary()
@@ -403,11 +408,11 @@ def main():
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Abstractive Summarizer')
 	parser.add_argument('input_dir', help='input folder containing all text files')
-	parser.add_argument('out_file', help='output file')
-	parser.add_argument('-w', '--word-length', help='maximum word length', default=DEFAULT_MAX_WORD_LENGTH)
-	parser.add_argument('-v', '--vp-thresh', help='alternative VP threshold', default=DEFAULT_ALTERNATIVE_VP_THRESHOLD)
+	parser.add_argument('output_file', help='output file')
+	parser.add_argument('-w', '--max-word-length', help='maximum word length', default=DEFAULT_MAX_WORD_LENGTH)
+	parser.add_argument('-v', '--alt-vp-thresh', help='alternative VP threshold', default=DEFAULT_ALTERNATIVE_VP_THRESHOLD)
 	parser.add_argument('-s', '--max-sent', help='maximum number of sentences', default=DEFAULT_MAXIMUM_SENTENCE)
-	parser.add_argument('-t', '--threads', help='number of threads', default=0)
+	parser.add_argument('-t', '--threads', help='number of threads', default=DEFAULT_THREADS)
 	parser.add_argument('-p', '--plaintext', help='is plain text data', default=False, action='store_true')
 	parser.add_argument('-e', '--export-only', help='only export the phrases', default=False, action='store_true')
 	args = parser.parse_args()
