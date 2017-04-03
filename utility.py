@@ -29,7 +29,7 @@ def increment_value(dictionary, key):
 	dictionary[key] += 1
 
 def build_key(phrase1, phrase2):
-		return phrase1.phrase_id + ':' + phrase2.phrase_id
+		return str(phrase1.phrase_id) + ':' + str(phrase2.phrase_id)
 
 def calculate_jaccard_index(phrase1, phrase2):
 	concepts_phrase1 = phrase1.concepts

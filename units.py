@@ -50,7 +50,7 @@ class Phrase():
 
 	@property
 	def is_pronoun(self):
-		return self.is_NP and this.content.lower() in pronouns
+		return self.is_NP and self.content.lower() in self.pronouns
 
 	@property
 	def word_length(self):
@@ -79,7 +79,7 @@ class PhraseMatrix(dict):
 
 	def __contains__(self, phrase_tuple):
 		return super().__contains__(self.__transformkey__(phrase_tuple))
-		
+
 	def __getitem__(self, phrase_tuple):
 		assert isinstance(phrase_tuple, tuple)
 		assert len(phrase_tuple) == 2

@@ -30,20 +30,20 @@ class Optimizer():
 		self.gamma_variables = {}
 
 		for np in self.noun_phrases:
-			var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n:" + noun.phrase_id)
-			self.noun_variables[noun.phrase_id] = var
-			expr.addTerm(noun.score, var)
+			var = self.model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n:" + str(np.phrase_id))
+			self.noun_variables[np.phrase_id] = var
+			expr.addTerms(np.score, var)
 
 			for vp in self.verb_phrases:
-				if compatibility_matrix[(np, vp)] == 1:
+				if self.compatibility_matrix[(np, vp)] == 1:
 					key = 'gamma:' + utility.build_key(np, vp)
-					gamma = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, key)
+					gamma = self.model.addVar(0.0, 1.0, 1.0, GRB.BINARY, key)
 					self.gamma_variables[key] = gamma
 
 		for vp in self.verb_phrases:
-			var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "v:" + verb.phrase_id)
+			var = self.model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "v:" + str(vp.phrase_id))
 			self.verb_variables[vp.phrase_id] = var
-			expr.addTerm(vp.score, var)
+			expr.addTerms(vp.score, var)
 
 	def _init_linking_variables(self, expr):
 		self.noun_to_noun_variables = {}
@@ -56,10 +56,10 @@ class Optimizer():
 				np2 = self.noun_phrases[j]
 				key = utility.build_key(np1, np2)
 
-				var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n2n:" + key)
-				noun_to_noun_variables[key] = var
+				var = self.model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n2n:" + key)
+				self.noun_to_noun_variables[key] = var
 				score = -(np1.score + np2.score) * self.calculate_similarity(np1, np2)
-				expr.addTerm(score, var)
+				expr.addTerms(score, var)
 
 		len_verb_phrases = len(self.verb_phrases)
 		for i in range(0, len_verb_phrases - 1):
@@ -68,10 +68,10 @@ class Optimizer():
 				vp2 = self.verb_phrases[j]
 				key = utility.build_key(vp1, vp2)
 
-				var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "v2v:" + key)
-				verb_to_verb_variables[key] = var
-				score = -(vp1.getScore() + vp2.getScore()) * self.calculate_similarity(vp1, vp2)
-				expr.addTerm(score, var)
+				var = self.model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "v2v:" + key)
+				self.verb_to_verb_variables[key] = var
+				score = -(vp1.score + vp2.score) * self.calculate_similarity(vp1, vp2)
+				expr.addTerms(score, var)
 
 	def _init_constraints(self):
 		ca = ConstraintAdder(self)
@@ -88,7 +88,7 @@ class Optimizer():
 
 	def calculate_similarity(self, phrase1, phrase2):
 		for coref_set in self.corefs.values():
-			if a.content in coref_set and b.content in coref_set:
+			if phrase1.content in coref_set and phrase2.content in coref_set:
 				return 1.0
 
 		return utility.calculate_jaccard_index(phrase1, phrase2)

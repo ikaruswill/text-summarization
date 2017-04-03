@@ -28,28 +28,28 @@ class ConstraintAdder():
 					expr.addTerms(1.0, np_var)
 					expr.addTerms(-1.0, var)
 
-					self.model.addConstr(expr, GRB.GREATER_EQUAL, 0.0, label + ':' + noun.phrase_id)
+					self.model.addConstr(expr, GRB.GREATER_EQUAL, 0.0, label + ':' + str(np.phrase_id))
 
 					constraint.addTerms(1.0, var)
 
 			constraint.addTerms(-1.0, np_var)
-			self.model.addConstr(constraint, GRB.GREATER_EQUAL, 0.0, label + ':' + noun.phrase_id)
+			self.model.addConstr(constraint, GRB.GREATER_EQUAL, 0.0, label + ':' + str(np.phrase_id))
 
 	def VP_validity(self):
 		label = 'vp_validity'
 		for vp in self.verb_phrases:
 			vp_var = self.verb_variables[vp.phrase_id]
 			constraint = LinExpr()
-			contraint.addTerms(-1.0, vp_var)
+			constraint.addTerms(-1.0, vp_var)
 
 			for np in self.noun_phrases:
 				if self.compatibility_matrix[(np, vp)] == 1:
 					key = 'gamma:' + utility.build_key(np, vp)
 					var = self.gamma_variables[key]
 
-					contraint.addTerms(1.0, var)
+					constraint.addTerms(1.0, var)
 
-			self.model.addConstr(constr, GRB.EQUAL, 0.0, label + ':' + vp.phrase_id)
+			self.model.addConstr(constraint, GRB.EQUAL, 0.0, label + ':' + str(vp.phrase_id))
 
 	def NP_not_i_within_i(self):
 		self._not_i_within_i(self.noun_phrases, self.noun_variables)
@@ -64,16 +64,16 @@ class ConstraintAdder():
 			for j in range(i + 1, len_phrases):
 				phrase1 = phrases[i]
 				phrase2 = phrases[j]
-				if phrase1.phrase_id == phrase.parent_id:
+				if phrase1.phrase_id == phrase2.parent_id:
 					var1 = variables[phrase1.phrase_id]
 					var2 = variables[phrase2.phrase_id]
 
 					expr = LinExpr()
-					expr.addTerm(1.0, var1)
-					expr.addTerm(1.0, var2)
+					expr.addTerms(1.0, var1)
+					expr.addTerms(1.0, var2)
 
 					self.model.addConstr(expr, GRB.LESS_EQUAL, 1.0, label + ':' + \
-						phrase1.is_NP + ':' + phrase1.phrase_id + phrase2.phrase_id)
+						str(phrase1.is_NP) + ':' + str(phrase1.phrase_id) + ':' + str(phrase2.phrase_id))
 
 	def NP_co_occurrence(self):
 		self._co_occurrence(self.noun_phrases, self.noun_variables, self.noun_to_noun_variables)
@@ -88,7 +88,7 @@ class ConstraintAdder():
 			phrase_i = phrases[i]
 			var_i = variables[phrase_i.phrase_id]
 
-			for j in range(i + 1, phrases):
+			for j in range(i + 1, len_phrases):
 				phrase_j = phrases[j]
 				var_j = variables[phrase_j.phrase_id]
 				key = utility.build_key(phrase_i, phrase_j)
@@ -97,18 +97,18 @@ class ConstraintAdder():
 				expr = LinExpr()
 				expr.addTerms(1.0, var_ij)
 				expr.addTerms(-1.0, var_i)
-				self.model.addConstr(expr, GRB.LESS_EQUAL, 0.0, label + '_1:' + phrase_i.isNP + key)
+				self.model.addConstr(expr, GRB.LESS_EQUAL, 0.0, label + '_1:' + str(phrase_i.is_NP) + key)
 
 				expr = LinExpr()
 				expr.addTerms(1.0, var_ij)
 				expr.addTerms(-1.0, var_j)
-				self.model.addConstr(expr, GRB.LESS_EQUAL, 0.0, label + '_2:' + phrase_i.isNP + key)
+				self.model.addConstr(expr, GRB.LESS_EQUAL, 0.0, label + '_2:' + str(phrase_i.is_NP) + key)
 
 				expr = LinExpr()
 				expr.addTerms(1.0, var_i)
 				expr.addTerms(1.0, var_j)
 				expr.addTerms(-1.0, var_ij)
-				self.model.addConstr(expr, GRB.LESS_EQUAL, 1.0, label + '_3:' + phrase_i.isNP + key)
+				self.model.addConstr(expr, GRB.LESS_EQUAL, 1.0, label + '_3:' + str(phrase_i.is_NP) + key)
 				
 	def sentence_number(self, k):
 		label = 'sentence_number'
@@ -116,7 +116,7 @@ class ConstraintAdder():
 
 		for np in self.noun_phrases:
 			var = self.noun_variables[np.phrase_id]
-			expr.addTerm(1.0, var)
+			expr.addTerms(1.0, var)
 
 		self.model.addConstr(expr, GRB.LESS_EQUAL, k, label)
 
@@ -128,7 +128,7 @@ class ConstraintAdder():
 				expr = LinExpr()
 				expr.addTerms(1.0, var)
 
-				self.model.addConstr(expr, GRB.EQUAL, 0.0, label + ':' + vp.phrase_id)
+				self.model.addConstr(expr, GRB.EQUAL, 0.0, label + ':' + str(vp.phrase_id))
 
 	def pronoun_avoidance(self):
 		label = 'pronoun_avoidance'
@@ -137,7 +137,7 @@ class ConstraintAdder():
 				var = self.noun_variables[np.phrase_id]
 				expr = LinExpr()
 				expr.addTerms(1.0, var)
-				self.model.addConstr(expr, GRB.EQUAL, 0.0, label + ':' + np.phrase_id)
+				self.model.addConstr(expr, GRB.EQUAL, 0.0, label + ':' + str(np.phrase_id))
 
 	def word_length(self, max_word_length):
 		label = 'length_constraint'
