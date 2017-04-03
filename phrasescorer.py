@@ -1,8 +1,4 @@
 import math
-from sets import Set
-from units import Paragraph
-from units import Phrase
-import InputDocument
 
 class PhraseScorer():
 	B = 6.0
