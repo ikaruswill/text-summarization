@@ -1,32 +1,34 @@
 import utility
 from gurobi import *
+from constraints import ConstraintAdder
 
 class Optimizer():
-	def __init__(self, noun_phrases, verb_phrases, threads):
-		self.threads = threads
+	def __init__(self, noun_phrases, verb_phrases, corefs, max_sentence,\
+		min_sentence_length, min_verb_length, threads):
+
 		self.noun_phrases = noun_phrases
 		self.verb_phrases = verb_phrases
+		self.corefs = corefs
+		self.max_sentence = max_sentence
+		self.min_sentence_length = min_sentence_length
+		self.min_verb_length = min_verb_length
 
+		env = Env()
+		env.Params.Threads = threads
+		self.model = Model(env=env)
+		objective = LinExpr()
+
+		self._init_variables(objective)
+		self._init_linking_variables(objective)
+		self.model.update()
+		self.model.setObjective(objective, GRB.MAXIMIZE)
+
+		self._init_constraints()
+
+	def _init_variables(self, expr):
 		self.noun_variables = {}
 		self.verb_variables = {}
 		self.gamma_variables = {}
-
-		self.noun_to_noun_variables = {}
-		self.verb_to_verb_variables = {}
-
-	def calculate_similarity(self, phrase1, phrase2):
-		for coref_set in self.corefs.values():
-			if a.content in coref_set and b.content in coref_set:
-				return 1.0
-
-		return utility.calculate_jaccard_index(phrase1, phrase2)
-
-	def start_optimization(self):
-		env = Env()
-		env.Params.Threads = self.threads
-		model = Model(env=env)
-
-		expr = LinExpr()
 
 		for np in self.noun_phrases:
 			var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n:" + noun.phrase_id)
@@ -35,9 +37,8 @@ class Optimizer():
 
 			for vp in self.verb_phrases:
 				if compatibility_matrix[(np, vp)] == 1:
-					key = 'gamma:' + self.build_key(np, vp)
+					key = 'gamma:' + utility.build_key(np, vp)
 					gamma = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, key)
-
 					gamma_variables[key] = gamma
 
 		for vp in self.verb_phrases:
@@ -45,12 +46,16 @@ class Optimizer():
 			verb_variables[vp.phrase_id] = var
 			expr.addTerm(vp.score, var)
 
+	def _init_linking_variables(self, expr):
+		self.noun_to_noun_variables = {}
+		self.verb_to_verb_variables = {}
+
 		len_noun_phrases = len(self.noun_phrases)
 		for i in range(0, len_noun_phrases - 1):
 			for j in range(i + 1, len_noun_phrases):
 				np1 = self.noun_phrases[i]
 				np2 = self.noun_phrases[j]
-				key = self.build_key(np1, np2)
+				key = utility.build_key(np1, np2)
 
 				var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n2n:" + key)
 				noun_to_noun_variables[key] = var
@@ -62,30 +67,37 @@ class Optimizer():
 			for j in range(i + 1, len_verb_phrases):
 				vp1 = self.verb_phrases[i]
 				vp2 = self.verb_phrases[j]
-				key = self.build_key(vp1, vp2)
+				key = utility.build_key(vp1, vp2)
 
 				var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "v2v:" + key)
 				verb_to_verb_variables[key] = var
 				score = -(vp1.getScore() + vp2.getScore()) * self.calculate_similarity(vp1, vp2)
 				expr.addTerm(score, var)
 
-		model.update()
-		model.setObjective(expr, GRB.MAXIMIZE)
+	def _init_constraints(self):
+		ca = ConstraintAdder(self)
+		ca.NP_validity()
+		ca.VP_validity()
+		ca.NP_not_i_within_i()
+		ca.VP_not_i_within_i()
+		ca.NP_coocurence()
+		ca.VP_coocurence()
+		ca.sentence_number(self.max_sentence)
+		ca.short_sentence_avoidance(self.min_sentence_length, self.min_verb_length)
+		ca.pronoun_avoidance()
+		ca.word_length(self.max_word_length)
 
-		# Add constraints
-		add_NP_validity(model)
-		add_VP_validity(model)
-		add_not_I_within_I(model, self.noun_phrases, self.noun_variables)
-		add_not_I_within_I(model, self.verb_phrases, self.verb_variables)
-		add_phrase_cooccurence(model, self.noun_phrases, self.noun_variables, self.noun_to_noun_variables)
-		add_phrase_cooccurence(model, self.verb_phrases, self.verb_variables, self.verb_to_verb_variables)
-		add_sentence_number(model, self.max_sentence)
-		add_short_sentence_avoidance(model, self.MIN_SENTENCE_LENGTH)
-		add_pronoun_avoidance(model)
-		add_length(model)
+	def calculate_similarity(self, phrase1, phrase2):
+		for coref_set in self.corefs.values():
+			if a.content in coref_set and b.content in coref_set:
+				return 1.0
 
+		return utility.calculate_jaccard_index(phrase1, phrase2)
+
+	def optimize(self):
 		model.optimize()
 
+	def generate_summary(self):
 		selected_nouns = {}
 		selected_verbs = {}
 
@@ -104,7 +116,7 @@ class Optimizer():
 				selected_verbs[vp.phrase_id] = phrase
 
 		selected_NP_lists = {}
-		summary_sentences = {} # Sorted
+		summary_sentences = {} # SortedDict
 
 		for key, var in gamma_variables.items():
 			value = var.X
