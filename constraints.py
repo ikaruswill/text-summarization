@@ -52,10 +52,10 @@ class ConstraintAdder():
 			self.model.addConstr(constr, GRB.EQUAL, 0.0, label + ':' + vp.phrase_id)
 
 	def NP_not_i_within_i(self):
-		self._not_i_within_i(noun_phrases, noun_variables)
+		self._not_i_within_i(self.noun_phrases, self.noun_variables)
 
 	def VP_not_i_within_i(self):
-		self._not_i_within_i(verb_phrases, verb_variables)
+		self._not_i_within_i(self.verb_phrases, self.verb_variables)
 
 	def _not_i_within_i(self, phrases, variables):
 		label = 'i_within_i'
@@ -75,14 +75,14 @@ class ConstraintAdder():
 					self.model.addConstr(expr, GRB.LESS_EQUAL, 1.0, label + ':' + \
 						phrase1.is_NP + ':' + phrase1.phrase_id + phrase2.phrase_id)
 
-	def NP_coocurrence(self):
-		self._coocurrence(noun_phrases, noun_variables, noun_to_noun_variables)
+	def NP_co_occurrence(self):
+		self._co_occurrence(noun_phrases, noun_variables, noun_to_noun_variables)
 
-	def VP_coocurrence(self):
-		self._coocurrence(verb_phrases, verb_variables, verb_to_verb_variables)
+	def VP_co_occurrence(self):
+		self._co_occurrence(verb_phrases, verb_variables, verb_to_verb_variables)
 
-	def _coocurrence(self, phrases, variables, linking_variables):
-		label = 'phrase_coocurrence'
+	def _co_occurrence(self, phrases, variables, linking_variables):
+		label = 'phrase_co_occurrence'
 		for i in range(0, phrases - 1):
 			phrase_i = phrases[i]
 			var_i = variables[phrase_i.phrase_id]
