@@ -27,3 +27,6 @@ def increment_value(dictionary, key):
 	if key not in dictionary:
 		dictionary[key] = 0
 	dictionary[key] += 1
+
+def build_key(phrase1, phrase2):
+		return phrase1.phrase_id + ':' + phrase2.phrase_id
