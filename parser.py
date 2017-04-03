@@ -1,11 +1,12 @@
 from units import PhraseMatrix
 from documentprocessor import DocumentProcessor
+from optimizer import Optimizer
 import gurobipy as g
 import sys
 
 class Parser():
-	MIN_SENTENCE_LENGTH = 5
-	MINIMUM_VERB_LENGTH = 2
+	min_sentence_length = 5
+	min_verb_length = 2
 
 	def __init__(self, max_sentence, alternative_vp_threshold, max_word_length, is_tac, threads):
 		self.max_sentence = max_sentence
@@ -27,12 +28,6 @@ class Parser():
 		self.verbs = set()
 
 		self.docs = []
-
-		self.noun_variables = {}
-		self.verb_variables = {}
-		self.gamma_variables = {}
-		self.noun_to_noun_variables = {}
-		self.verb_to_verb_variables = {}
 
 		self.processor = DocumentProcessor(is_tac, self.indicator_matrix)
 
@@ -92,12 +87,6 @@ class Parser():
 					self.alternative_VPs[(phrase1, phrase2)] = d
 					self.alternative_VPs[(phrase2, phrase1)] = d
 
-	def find_optimal_solution(self):
-		self.find_alt_VPs(self.noun_phrases, self.corefs.values())
-		self.find_alt_VPs(self.verb_phrases)
-		self.build_compatibility_matrix()
-		return self.start_optimization()
-
 	def update_model(self):
 		self.noun_phrases = self.processor.noun_phrases
 		self.verb_phrases = self.processor.verb_phrases
@@ -109,7 +98,12 @@ class Parser():
 
 	def generate_summary(self):
 		self.score_phrases()
-		self.find_optimal_solution()
+		self.find_alt_VPs(self.noun_phrases, self.corefs.values())
+		self.find_alt_VPs(self.verb_phrases)
+		self.build_compatibility_matrix()
+		optimizer = Optimizer(self)
+		optimizer.optimize()
+		return optimizer.generate_summary()
 
 	def process_document(self, string):
 		self.processor.process_document(string)

@@ -3,18 +3,17 @@ from gurobi import *
 from constraints import ConstraintAdder
 
 class Optimizer():
-	def __init__(self, noun_phrases, verb_phrases, corefs, max_sentence,\
-		min_sentence_length, min_verb_length, threads):
-
-		self.noun_phrases = noun_phrases
-		self.verb_phrases = verb_phrases
-		self.corefs = corefs
-		self.max_sentence = max_sentence
-		self.min_sentence_length = min_sentence_length
-		self.min_verb_length = min_verb_length
+	def __init__(self, parser):
+		self.noun_phrases = parser.noun_phrases
+		self.verb_phrases = parser.verb_phrases
+		self.corefs = parser.corefs
+		self.compatibility_matrix = parser.compatibility_matrix
+		self.max_sentence = parser.max_sentence
+		self.min_sentence_length = parser.min_sentence_length
+		self.min_verb_length = parser.min_verb_length
 
 		env = Env()
-		env.Params.Threads = threads
+		env.Params.Threads = namespace.threads
 		self.model = Model(env=env)
 		objective = LinExpr()
 
@@ -135,13 +134,14 @@ class Optimizer():
 
 		for key, np_list in selected_NP_lists:
 			np = selected_nouns[key]
+			phrases = selected_NP_lists[key]
 			sentence = np.content + " "
 			min_id = sys.maxsize
 
 			verbs = []
-			self.phrases.sort(key=lambda x: operator.attrgetter('phrase_id'))
+			phrases.sort(key=lambda x: operator.attrgetter('phrase_id'))
 
-			for phrase in self.phrases:
+			for phrase in phrases:
 				if not phrase.is_NP and min_id > phrase.phrase_id:
 					mind_id = phrase.phrase_id
 				verbs.append(phrase.content)
