@@ -148,7 +148,7 @@ class InputDocument():
 
 	def parse_xml_string(self, xml_string):
 		root = xml.etree.ElementTree.fromstring(xml_string)
-		self.headline = root.find('.//HEADLINE').text
+		self.headline = root.find('.//HEADLINE').text.strip()
 		text = ''
 		# To replace \n in line breaks within <P> tag
 		# Note: Minor issue with with 16\n-year-old --> 16 -year-old
