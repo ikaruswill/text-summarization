@@ -8,8 +8,8 @@ class PhraseScorer():
 		self.input_document = input_doc
 		
 	def weighting_paragraph(self, paragraph_position):
-		if paragraph_position < -1 * math.log(B) / math.log(RHO):
-			return math.pow(RHO, paragraph_position) * B
+		if paragraph_position < -1 * math.log(self.B) / math.log(self.RHO):
+			return math.pow(self.RHO, paragraph_position) * self.B
 		else:
 			return 1.0
 		
@@ -17,9 +17,9 @@ class PhraseScorer():
 		score = 0.0
 		concepts = phrase.concepts
 		paragraphs = self.input_document.paragraphs
-		paragraphLength = len(paragraphs)
+		len_paragraph = len(paragraphs)
 		for concept in concepts:
-			for i in range(paragraghLength):
+			for i in range(len_paragraph):
 				count = paragraphs[i].count_frequency(concept)
 				score += count * self.weighting_paragraph(i)
 			

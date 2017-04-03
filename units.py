@@ -68,8 +68,8 @@ class Paragraph():
 		return self.concept_frequency.keys()
 
 	def count_frequency(self, concept):
-		if concept in concept_frequency:
-			return concept_frequency[concept]
+		if concept in self.concept_frequency:
+			return self.concept_frequency[concept]
 		else:
 			return 0
 

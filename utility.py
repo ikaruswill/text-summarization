@@ -37,7 +37,7 @@ def calculate_jaccard_index(phrase1, phrase2):
 
 	count = 0
 	for concept in concepts_phrase1:
-		if concepts_phrase2.find(concept):
+		if concept in concepts_phrase2:
 			count += 1
 
 	divisor = len(concepts_phrase1) + len(concepts_phrase2) - count
