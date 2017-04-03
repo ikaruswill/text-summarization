@@ -13,11 +13,11 @@ class PhraseExtractor():
 		for i, sentence in enumerate(sentences):
 			phrases_in_sentence = self.extract_phrases(self.input_document.parse_trees[i], utility.count_words(sentence))
 
-			all_phrases.append(phrases_in_sentence)
-			len_sentences = len(sentences)
-			for i in range(0, len_sentences - 1):
-				a = phrases_in_sentence[i]
-				for j in range(i + 1, len_sentences):
+			all_phrases.extend(phrases_in_sentence)
+			len_phrases_in_sentence = len(phrases_in_sentence)
+			for i in range(0, len_phrases_in_sentence - 1):
+				for j in range(i + 1, len_phrases_in_sentence):
+					a = phrases_in_sentence[i]
 					b = phrases_in_sentence[j]
 					if a.is_NP and not b.is_NP and a.sentence_node_id == b.sentence_node_id:
 						indicator_matrix[(a,b)] = 1
