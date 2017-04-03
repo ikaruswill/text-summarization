@@ -2,14 +2,16 @@ from gurobi import *
 import utility
 
 class ConstraintAdder():
-	def __init__(self, model, noun_phrases, verb_phrases, noun_variables, verb_variables, gamma_variables, compatibility_matrix):
-		self.model = model
-		self.noun_phrases = noun_phrases
-		self.verb_phrases = verb_phrases
-		self.noun_variables = noun_variables
-		self.verb_variables = verb_variables
-		self.gamma_variables = gamma_variables
-		self.compatibility_matrix = compatibility_matrix
+	def __init__(self, optimizer):
+		self.model = optimizer.model
+		self.noun_phrases = optimizer.noun_phrases
+		self.verb_phrases = optimizer.verb_phrases
+		self.noun_variables = optimizer.noun_variables
+		self.verb_variables = optimizer.verb_variables
+		self.gamma_variables = optimizer.gamma_variables
+		self.noun_to_noun_variables = optimizer.noun_to_noun_variables
+		self.verb_to_verb_variables = optimizer.verb_to_verb_variables
+		self.compatibility_matrix = optimizer.compatibility_matrix
 
 	def NP_validity(self):
 		label = 'np_validity'
@@ -49,6 +51,12 @@ class ConstraintAdder():
 
 			self.model.addConstr(constr, GRB.EQUAL, 0.0, label + ':' + vp.phrase_id)
 
+	def NP_not_i_within_i(self):
+		self._not_i_within_i(noun_phrases, noun_variables)
+
+	def VP_not_i_within_i(self):
+		self._not_i_within_i(verb_phrases, verb_variables)
+
 	def _not_i_within_i(self, phrases, variables):
 		label = 'i_within_i'
 		len_phrases = len(phrases)
@@ -66,6 +74,12 @@ class ConstraintAdder():
 
 					self.model.addConstr(expr, GRB.LESS_EQUAL, 1.0, label + ':' + \
 						phrase1.is_NP + ':' + phrase1.phrase_id + phrase2.phrase_id)
+
+	def NP_phrase_coocurrence(self):
+		self._phrase_coocurrence(noun_phrases, noun_variables, noun_to_noun_variables)
+
+	def VP_phrase_coocurrence(self):
+		self._phrase_coocurrence(verb_phrases, verb_variables, verb_to_verb_variables)
 
 	def _phrase_coocurrence(self, phrases, variables, linking_variables):
 		label = 'phrase_coocurrence'
