@@ -160,10 +160,29 @@ class InputDocument():
 
 	def extract_named_entities(self, result):
 		named_entities = []
+		prev_token_ner_type = None
+		ner_string = ''
 		for sentence in result['sentences']:
 			for token in sentence['tokens']:
 				if token['ner'] != 'O':
-					named_entities.append(token['originalText'])
+					# New NER
+					if prev_token_ner_type == None:
+						ner_string = token['originalText']
+						prev_token_ner_type = token['ner']
+					# Token belongs to previous NER
+					elif token['ner'] == prev_token_ner_type:
+						ner_string += ' ' + token['originalText']
+					# Token belongs to a new NER
+					else:
+						named_entities.append(ner_string.strip())
+						ner_string = token['originalText']
+						prev_token_ner_type = token['ner']
+				else:
+					# Token is no longer part of NER
+					if prev_token_ner_type != None:
+						named_entities.append(ner_string.strip())
+						prev_token_ner_type = None
+						ner_string = ''
 		return named_entities
 
 	def extract_coreferences(self, result):
