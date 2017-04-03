@@ -12,9 +12,8 @@ class Optimizer():
 		self.min_sentence_length = parser.min_sentence_length
 		self.min_verb_length = parser.min_verb_length
 
-		env = Env()
-		env.Params.Threads = namespace.threads
-		self.model = Model(env=env)
+		self.model = Model()
+		self.model.Params.Threads = parser.threads
 		objective = LinExpr()
 
 		self._init_variables(objective)
