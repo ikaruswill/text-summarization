@@ -77,35 +77,26 @@ class PhraseMatrix(dict):
 	def __init__(self, *args):
 		super().__init__(self, *args)
 
+	def __contains__(self, phrase_tuple):
+		return super().__contains__(self.__transformkey__(phrase_tuple))
+		
 	def __getitem__(self, phrase_tuple):
 		assert isinstance(phrase_tuple, tuple)
 		assert len(phrase_tuple) == 2
 		assert isinstance(phrase_tuple[0], Phrase)
 		assert isinstance(phrase_tuple[1], Phrase)
-		
-		key = ''
-		if phrase_tuple[0].is_NP:
-			key += 'NP_'
-		else:
-			key += 'VP_'
 
-		key += str(phrase_tuple[0].phrase_id) + ':'
-
-		if phrase_tuple[1].is_NP:
-			key += 'NP_'
-		else:
-			key += 'VP_'
-
-		key += str(phrase_tuple[1].phrase_id)
-
-		return super().__getitem__(key)
+		return super().__getitem__(self.__transformkey__(phrase_tuple))
 
 	def __setitem__(self, phrase_tuple, value):
 		assert isinstance(phrase_tuple, tuple)
 		assert len(phrase_tuple) == 2
 		assert isinstance(phrase_tuple[0], Phrase)
 		assert isinstance(phrase_tuple[1], Phrase)
-		
+
+		super().__setitem__(self.__transformkey__(phrase_tuple), value)
+
+	def __transformkey__(self, phrase_tuple):
 		key = ''
 		if phrase_tuple[0].is_NP:
 			key += 'NP_'
@@ -120,8 +111,7 @@ class PhraseMatrix(dict):
 			key += 'VP_'
 
 		key += str(phrase_tuple[1].phrase_id)
-
-		super().__setitem__(key, value)
+		return key
 
 
 class InputDocument():
