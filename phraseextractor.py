@@ -37,8 +37,8 @@ class PhraseExtractor():
 			if node.startswith('    ('):
 				node = node.strip()
 				# Ignore irrelevant nodes
-				if not node.startswith('(NP') or not node.startswith('(VP') \
-				or not node.startswith('(S') or not node.startswith('(SBAR'):
+				if not node.startswith('(NP') and not node.startswith('(VP') \
+				and not node.startswith('(S') and not node.startswith('(SBAR'):
 					continue
 
 				# Create new phrase
