@@ -1,5 +1,5 @@
 import utility
-from units import InputDocument
+from units import InputDocument, Phrase
 
 class PhraseExtractor():
 	def __init__(self, input_document, indicator_matrix):
@@ -20,7 +20,7 @@ class PhraseExtractor():
 					a = phrases_in_sentence[i]
 					b = phrases_in_sentence[j]
 					if a.is_NP and not b.is_NP and a.sentence_node_id == b.sentence_node_id:
-						indicator_matrix[(a,b)] = 1
+						self.indicator_matrix[(a,b)] = 1
 		return all_phrases
 		
 	def extract_phrases(self, parse_tree, sentence_length):
@@ -43,7 +43,7 @@ class PhraseExtractor():
 
 				# Create new phrase
 				is_not_VP = not node.startswith('(VP')
-				phrase_content = get_phrase_text(nodes, i)
+				phrase_content = self.get_phrase_text(nodes, i)
 				phrase = Phrase(phrase_content, is_not_VP, -1, 0)
 				phrase.concepts = self.input_document.extract_concepts_from_string(phrase_content)
 				# Set current phrase sentence length to root sentence length
@@ -101,7 +101,7 @@ class PhraseExtractor():
 					# If l2 node is VP and l1 node is VP
 					if is_not_VP and child.strip().startswith('(NP') \
 					or is_VP and child.strip().startswith('(VP'):
-						subphrase_content = get_phrase_text(nodes, i)
+						subphrase_content = self.get_phrase_text(nodes, i)
 						subphrase = Phrase(subphrase_content, is_not_VP, phrase.phrase_id, sentence_node_id)
 						subphrase.concepts = self.input_document.extract_concepts_from_string(subphrase_content)
 						# Set subphrase sentence_length to parent S node length
@@ -133,8 +133,11 @@ class PhraseExtractor():
 				# Remove all parentheses from leaf
 				while node_leaf.startswith('('):
 					node_leaf = node_leaf.lstrip('(')
-				while node_leave.endswith(')'):
+				while node_leaf.endswith(')'):
 					node_leaf = node_leaf.rstrip(')')
+				node_leaf_tokens = node_leaf.split()
+				if len(node_leaf_tokens) < 2:
+					continue
 				node_leaf_text = node_leaf.split()[1]
 				phrase_text.append(node_leaf_text)
 

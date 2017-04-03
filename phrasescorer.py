@@ -15,8 +15,8 @@ class PhraseScorer():
 		
 	def score_phrase(self, phrase):
 		score = 0.0
-		concept = phrase.concepts
-		paragraphs = input_document.paragraphs
+		concepts = phrase.concepts
+		paragraphs = self.input_document.paragraphs
 		paragraphLength = len(paragraphs)
 		for concept in concepts:
 			for i in range(paragraghLength):

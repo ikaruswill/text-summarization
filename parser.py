@@ -2,8 +2,8 @@ from units import PhraseMatrix
 from documentprocessor import DocumentProcessor
 from optimizer import Optimizer
 from phrasescorer import PhraseScorer
-import gurobipy as g
 import sys
+import utility
 
 class Parser():
 	min_sentence_length = 5
@@ -45,7 +45,7 @@ class Parser():
 
 				self.compatibility_matrix[(np, vp)] = int(related)
 
-	def check_relation(phrase1, phrase2, other_phrase1s, alt_phrase1s):
+	def check_relation(self, phrase1, phrase2, other_phrase1s, alt_phrase1s):
 		for other_phrase1 in other_phrase1s:
 			if (phrase1, other_phrase1) in alt_phrase1s \
 			and (other_phrase1, phrase2) in self.indicator_matrix:
@@ -56,7 +56,7 @@ class Parser():
 		for doc in self.docs:
 			scorer = PhraseScorer(doc)
 			for phrase in self.all_phrases:
-				score = scorer.score_phrases(phrase)
+				score = scorer.score_phrase(phrase)
 				phrase.score += score
 
 	def find_alt_NPs(self):
@@ -84,7 +84,7 @@ class Parser():
 				phrase1 = self.verb_phrases[i]
 				phrase2 = self.verb_phrases[j]
 
-				d = calculate_jaccard_index(phrase1, phrase2)
+				d = utility.calculate_jaccard_index(phrase1, phrase2)
 				if d >= self.alternative_vp_threshold:
 					self.alternative_VPs[(phrase1, phrase2)] = d
 					self.alternative_VPs[(phrase2, phrase1)] = d

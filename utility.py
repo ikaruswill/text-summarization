@@ -31,7 +31,7 @@ def increment_value(dictionary, key):
 def build_key(phrase1, phrase2):
 		return phrase1.phrase_id + ':' + phrase2.phrase_id
 
-def calculate_jaccard_index(self, phrase1, phrase2):
+def calculate_jaccard_index(phrase1, phrase2):
 	concepts_phrase1 = phrase1.concepts
 	concepts_phrase2 = phrase2.concepts
 
