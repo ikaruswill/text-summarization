@@ -4,7 +4,7 @@ class PhraseScorer():
 	B = 6.0
 	RHO = 0.5
 	
-	def _init_(self, input_doc):
+	def __init__(self, input_doc):
 		self.input_document = input_doc
 		
 	def weighting_paragraph(self, paragraph_position):
