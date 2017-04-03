@@ -117,28 +117,32 @@ class PhraseExtractor():
 	def get_phrase_text(self, nodes, index):
 		parent_indentation = nodes[index][:nodes[index].find('(')]
 		child_indentation = parent_indentation + '  '
-		phrase_text = ''
+		
+		# Extract from target
+		phrase_text = self.extract_node_text(nodes[index])
+
+		# Extract from children
 		for child in nodes[index + 1:]:
 			# If current node is no longer part of the subtree, stop
 			if not child.startswith(child_indentation):
 				break
 
-			node_leaves = child.strip().split()
-			# Skip to deeper node if node does not contain leaves
-			# i.e. only contains itself
-			if len(node_leaves) == 1:
-				continue
-
-			for node_leaf in node_leaves[1:]:
-				# Remove all parentheses from leaf
-				while node_leaf.startswith('('):
-					node_leaf = node_leaf.lstrip('(')
-				while node_leaf.endswith(')'):
-					node_leaf = node_leaf.rstrip(')')
-				node_leaf_tokens = node_leaf.split()
-				if len(node_leaf_tokens) < 2:
-					continue
-				node_leaf_text = node_leaf.split()[1]
-				phrase_text.append(node_leaf_text)
+			node_text = self.extract_node_text(child)
+			if node_text != '':
+				phrase_text += ' ' + node_text
 
 		return phrase_text
+
+	def extract_node_text(self, node):
+		text = ''
+		node_contents = node.strip().split(' (')
+		if len(node_contents) < 2:
+			return ''
+		for unit in node_contents[1:]:
+			while unit.startswith('('):
+				unit = unit.lstrip('(')
+			while unit.endswith(')'):
+				unit = unit.rstrip(')')
+			text += ' ' + unit.split()[-1]
+		return text.strip()
+
