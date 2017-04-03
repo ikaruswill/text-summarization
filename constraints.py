@@ -75,13 +75,13 @@ class ConstraintAdder():
 					self.model.addConstr(expr, GRB.LESS_EQUAL, 1.0, label + ':' + \
 						phrase1.is_NP + ':' + phrase1.phrase_id + phrase2.phrase_id)
 
-	def NP_phrase_coocurrence(self):
-		self._phrase_coocurrence(noun_phrases, noun_variables, noun_to_noun_variables)
+	def NP_coocurrence(self):
+		self._coocurrence(noun_phrases, noun_variables, noun_to_noun_variables)
 
-	def VP_phrase_coocurrence(self):
-		self._phrase_coocurrence(verb_phrases, verb_variables, verb_to_verb_variables)
+	def VP_coocurrence(self):
+		self._coocurrence(verb_phrases, verb_variables, verb_to_verb_variables)
 
-	def _phrase_coocurrence(self, phrases, variables, linking_variables):
+	def _coocurrence(self, phrases, variables, linking_variables):
 		label = 'phrase_coocurrence'
 		for i in range(0, phrases - 1):
 			phrase_i = phrases[i]
@@ -138,7 +138,7 @@ class ConstraintAdder():
 				expr.addTerms(1.0, var)
 				self.model.addConstr(expr, GRB.EQUAL, 0.0, label + ':' + np.phrase_id)
 
-	def length(self, max_word_length):
+	def word_length(self, max_word_length):
 		label = 'length_constraint'
 		expr = LinExpr()
 		for np in self.noun_phrases:
