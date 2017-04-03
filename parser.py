@@ -58,12 +58,13 @@ class Parser():
 				score = scorer.score_phrases(phrase)
 				phrase.score += score
 
-	def find_alt_NPs(self, noun_phrases, clusters):
+	def find_alt_NPs(self):
+		clusters = self.corefs.values()
 		for cluster in clusters:
 			alt_phrases = []
 
 			for phrase_text in cluster:
-				for phrase in noun_phrases:
+				for phrase in self.noun_phrases:
 					if phrase.content == phrase_text:
 						alt_phrases.append(phrase)
 
@@ -75,12 +76,12 @@ class Parser():
 					self.alternative_NPs[(phrase1, phrase2)] = 1
 					self.alternative_NPs[(phrase2, phrase1)] = 1
 
-	def find_alt_VPs(self, verb_phrases):
-		len_verb_phrases = len(verb_phrases)
+	def find_alt_VPs(self):
+		len_verb_phrases = len(self.verb_phrases)
 		for i in range(0, len_alt_phrases - 1):
 			for j in range(i + 1, len_alt_phrases):
-				phrase1 = verb_phrases[i]
-				phrase2 = verb_phrases[j]
+				phrase1 = self.verb_phrases[i]
+				phrase2 = self.verb_phrases[j]
 
 				d = calculate_jaccard_index(phrase1, phrase2)
 				if d >= self.alternative_vp_threshold:
@@ -98,8 +99,8 @@ class Parser():
 
 	def generate_summary(self):
 		self.score_phrases()
-		self.find_alt_VPs(self.noun_phrases, self.corefs.values())
-		self.find_alt_VPs(self.verb_phrases)
+		self.find_alt_NPs()
+		self.find_alt_VPs()
 		self.build_compatibility_matrix()
 		optimizer = Optimizer(self)
 		optimizer.optimize()
