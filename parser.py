@@ -1,6 +1,7 @@
 from units import PhraseMatrix
 from documentprocessor import DocumentProcessor
 from optimizer import Optimizer
+from phrasescorer import PhraseScorer
 import gurobipy as g
 import sys
 

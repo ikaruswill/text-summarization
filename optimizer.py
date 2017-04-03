@@ -11,6 +11,7 @@ class Optimizer():
 		self.max_sentence = parser.max_sentence
 		self.min_sentence_length = parser.min_sentence_length
 		self.min_verb_length = parser.min_verb_length
+		self.max_word_length = parser.max_word_length
 
 		self.model = Model()
 		self.model.Params.Threads = parser.threads
@@ -30,18 +31,18 @@ class Optimizer():
 
 		for np in self.noun_phrases:
 			var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "n:" + noun.phrase_id)
-			noun_variables[noun.phrase_id] = var
+			self.noun_variables[noun.phrase_id] = var
 			expr.addTerm(noun.score, var)
 
 			for vp in self.verb_phrases:
 				if compatibility_matrix[(np, vp)] == 1:
 					key = 'gamma:' + utility.build_key(np, vp)
 					gamma = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, key)
-					gamma_variables[key] = gamma
+					self.gamma_variables[key] = gamma
 
 		for vp in self.verb_phrases:
 			var = model.addVar(0.0, 1.0, 1.0, GRB.BINARY, "v:" + verb.phrase_id)
-			verb_variables[vp.phrase_id] = var
+			self.verb_variables[vp.phrase_id] = var
 			expr.addTerm(vp.score, var)
 
 	def _init_linking_variables(self, expr):
@@ -93,21 +94,21 @@ class Optimizer():
 		return utility.calculate_jaccard_index(phrase1, phrase2)
 
 	def optimize(self):
-		model.optimize()
+		self.model.optimize()
 
 	def generate_summary(self):
 		selected_nouns = {}
 		selected_verbs = {}
 
 		for np in self.noun_phrases:
-			var = noun_variables[np.phrase_id]
+			var = self.noun_variables[np.phrase_id]
 			selected = var.X
 
 			if selected > 0:
 				selected_nouns[np.phrase_id] = phrase
 
 		for vp in self.verb_phrases:
-			var = verb_variables[vp.phrase_id]
+			var = self.verb_variables[vp.phrase_id]
 			selected = var.X
 
 			if selected > 0:
@@ -116,7 +117,7 @@ class Optimizer():
 		selected_NP_lists = {}
 		summary_sentences = {} # SortedDict
 
-		for key, var in gamma_variables.items():
+		for key, var in self.gamma_variables.items():
 			value = var.X
 
 			if value > 0:

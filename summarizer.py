@@ -20,6 +20,7 @@ def main():
 
 		parser.update_model()
 		summary = parser.generate_summary()
+		print('Summary: ')
 		print(summary)
 
 if __name__ == '__main__':

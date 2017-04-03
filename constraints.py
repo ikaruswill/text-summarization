@@ -76,14 +76,15 @@ class ConstraintAdder():
 						phrase1.is_NP + ':' + phrase1.phrase_id + phrase2.phrase_id)
 
 	def NP_co_occurrence(self):
-		self._co_occurrence(noun_phrases, noun_variables, noun_to_noun_variables)
+		self._co_occurrence(self.noun_phrases, self.noun_variables, self.noun_to_noun_variables)
 
 	def VP_co_occurrence(self):
-		self._co_occurrence(verb_phrases, verb_variables, verb_to_verb_variables)
+		self._co_occurrence(self.verb_phrases, self.verb_variables, self.verb_to_verb_variables)
 
 	def _co_occurrence(self, phrases, variables, linking_variables):
 		label = 'phrase_co_occurrence'
-		for i in range(0, phrases - 1):
+		len_phrases = len(phrases)
+		for i in range(0, len_phrases - 1):
 			phrase_i = phrases[i]
 			var_i = variables[phrase_i.phrase_id]
 
