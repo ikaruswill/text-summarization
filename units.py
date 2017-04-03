@@ -142,7 +142,7 @@ class InputDocument():
 		self.sentences = utility.sent_tokenize(text)
 		self.parse_trees = [sentence['parse'] for sentence in result['sentences']]
 		self.named_entities = self.extract_named_entities(result)
-		self.coreferences = self.extract_coreferences(result)
+		self.corefs = self.extract_coreferences(result)
 		self.word_to_lemma_dict = self.build_word_to_lemma_dict(result)
 		self.paragraphs = self.prepare_paragraphs(text, result)
 

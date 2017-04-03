@@ -12,13 +12,13 @@ class DocumentProcessor():
 
 		self.nouns = []
 		self.verbs = []
-		self.coreferences = {}
+		self.corefs = {}
 
 	def process_document(self, text):
 		doc = InputDocument(text)
 		self.docs.append(doc)
 		self.extract_phrases(doc)
-		self.coreferences.update(doc.coreferences)
+		self.corefs.update(doc.corefs)
 
 	def extract_phrases(self, doc):
 		phrase_extractor = PhraseExtractor(doc, self.indicator_matrix)
