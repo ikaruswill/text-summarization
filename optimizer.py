@@ -105,14 +105,14 @@ class Optimizer():
 			selected = var.X
 
 			if selected > 0:
-				selected_nouns[np.phrase_id] = phrase
+				selected_nouns[np.phrase_id] = np
 
 		for vp in self.verb_phrases:
 			var = self.verb_variables[vp.phrase_id]
 			selected = var.X
 
 			if selected > 0:
-				selected_verbs[vp.phrase_id] = phrase
+				selected_verbs[vp.phrase_id] = np
 
 		selected_NP_lists = {}
 		summary_sentences = {} # SortedDict
@@ -122,8 +122,8 @@ class Optimizer():
 
 			if value > 0:
 				data = key.split(':')
-				noun_id = int(data[0])
-				verb_id = int(data[1])
+				noun_id = int(data[1])
+				verb_id = int(data[2])
 
 				if not noun_id in selected_NP_lists:
 					selected_NP_lists[noun_id] = []
@@ -132,7 +132,7 @@ class Optimizer():
 
 		summary = ""
 
-		for key, np_list in selected_NP_lists:
+		for key, np_list in selected_NP_lists.items():
 			np = selected_nouns[key]
 			phrases = selected_NP_lists[key]
 			sentence = np.content + " "
