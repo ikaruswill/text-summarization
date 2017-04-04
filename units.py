@@ -32,7 +32,7 @@ class Phrase():
 			self._vp_id += 1
 
 	def __repr__(self):
-		return self.content + ": " + self.score
+		return self.content + ": " + str(self.score)
 
 	def __eq__(self, phrase):
 		return self.content == phrase
