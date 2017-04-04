@@ -146,3 +146,10 @@ class PhraseExtractor():
 			text += ' ' + unit.split()[-1]
 		return text.strip()
 
+
+	def _strip_brackets(self, text):
+		while text.startswith('('):
+			text = text.lstrip('(')
+		while text.endswith(')'):
+			text = text.rstrip(')')
+		return text
