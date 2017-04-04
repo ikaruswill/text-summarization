@@ -166,7 +166,7 @@ class PhraseExtractor():
 				return first_child.split()[0]
 		# Children in next node in list
 		else:
-			first_child = nodes[i + 1].strip()
+			first_child = nodes[index + 1].strip()
 			return self._strip_brackets(first_child).split()[0]
 
 	def _strip_brackets(self, text):
