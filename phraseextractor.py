@@ -135,14 +135,19 @@ class PhraseExtractor():
 
 	def extract_node_text(self, node):
 		text = ''
-		node_contents = node.strip().split(' (')
+		node = node.strip()
+		node_contents = node.split(' (')
 		if len(node_contents) < 2:
-			return ''
+			# Single node
+			if node.endswith(')'):
+				text = self._strip_brackets(node)
+				text = text.split()[-1]
+				return text
+			# Parent node
+			return text
+
 		for unit in node_contents[1:]:
-			while unit.startswith('('):
-				unit = unit.lstrip('(')
-			while unit.endswith(')'):
-				unit = unit.rstrip(')')
+			unit = self._strip_brackets(unit)
 			text += ' ' + unit.split()[-1]
 		return text.strip()
 
