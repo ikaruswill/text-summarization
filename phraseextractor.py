@@ -146,6 +146,23 @@ class PhraseExtractor():
 			text += ' ' + unit.split()[-1]
 		return text.strip()
 
+	def get_first_child_type(self, nodes, index):
+		node = nodes[index].strip()
+		# Has children in node or is leaf
+		if node.endswith(')'):
+			node_contents = node.split(' (')
+			# No children
+			if len(node_contents) < 2:
+				return
+			# Children in node
+			else:
+				first_child = node_contents[1]
+				# Brackets already removed by split
+				return first_child.split()[0]
+		# Children in next node in list
+		else:
+			first_child = nodes[i + 1].strip()
+			return self._strip_brackets(first_child).split()[0]
 
 	def _strip_brackets(self, text):
 		while text.startswith('('):
