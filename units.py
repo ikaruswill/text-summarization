@@ -25,11 +25,11 @@ class Phrase():
 		self.parent_id = parent_id
 		self.sentence_node_id = sentence_node_id
 		if is_NP:
-			self.phrase_id = self._np_id
-			self._np_id += 1
+			self.phrase_id = self.__class__._np_id
+			self.__class__._np_id += 1
 		else:
-			self.phrase_id = self._vp_id
-			self._vp_id += 1
+			self.phrase_id = self.__class__._vp_id
+			self.__class__._vp_id += 1
 
 	def __repr__(self):
 		return self.content + ": " + str(self.score)
