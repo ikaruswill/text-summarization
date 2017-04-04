@@ -64,10 +64,10 @@ class PhraseExtractor():
 				is_VP = not is_not_VP
 
 				if is_VP:
-					first_child = nodes[i + 1].strip()
+					first_child_type = self.get_first_child_type(nodes, i)
 					# Stop further processing if first child is MD, VBZ, VBP or VBD
-					if first_child.startswith('MD') or first_child.startswith('VBZ') \
-					or first_child.startswith('VBP') or first_child.startswith('VBD'):
+					if first_child_type == 'MD' or first_child_type == 'VBZ' \
+					or first_child_type == 'VBP' or first_child_type == 'VBD':
 						continue
 
 					sub_VP_count = 0
