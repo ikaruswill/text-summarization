@@ -88,7 +88,7 @@ class PhraseExtractor():
 					if sub_VP_count < 2: 
 						continue
 
-				for child in nodes[i + 1:]:
+				for j, child in enumerate(nodes[i + 1:]):
 					# If current node is no longer part of the subtree, stop
 					if not child.startswith('      '):
 						break
@@ -101,7 +101,7 @@ class PhraseExtractor():
 					# If l2 node is VP and l1 node is VP
 					if is_not_VP and child.strip().startswith('(NP') \
 					or is_VP and child.strip().startswith('(VP'):
-						subphrase_content = self.get_phrase_text(nodes, i)
+						subphrase_content = self.get_phrase_text(nodes, j + i + 1)
 						subphrase = Phrase(subphrase_content, is_not_VP, phrase.phrase_id, sentence_node_id)
 						subphrase.concepts = self.input_document.extract_concepts_from_string(subphrase_content)
 						# Set subphrase sentence_length to parent S node length
