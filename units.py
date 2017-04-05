@@ -128,8 +128,7 @@ class InputDocument():
 
 		# Note: corenlp recognizes sentences delimiters as periods regardless of newlines
 		result = cn.basic(text, out_format='json').json()
-		# CAUTION: sentences may not coincide with the number of sentences in parse_trees
-		self.sentences = utility.sent_tokenize(text)
+		self.sentence_lengths = self.get_sentence_lengths(result['sentences'])
 		self.parse_trees = [sentence['parse'] for sentence in result['sentences']]
 		self.named_entities = self.extract_named_entities(result)
 		self.corefs = self.extract_coreferences(result)
@@ -212,8 +211,11 @@ class InputDocument():
 		
 		return paragraphs
 
-	def get_sentences(self, text):
-		return utility.sent_tokenize(text)
+	def get_sentence_lengths(self, sentences):
+		lengths = []
+		for sentence in sentences:
+			lengths.append(len(sentence['tokens']))
+		return lengths
 
 	def extract_concepts_from_string(self, string):
 		concept_frequency_dict = {}

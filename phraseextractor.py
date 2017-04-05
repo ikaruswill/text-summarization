@@ -8,10 +8,11 @@ class PhraseExtractor():
 
 	def extract_all_phrases(self):
 		all_phrases = []
-		sentences = self.input_document.sentences
+		num_sentences = len(self.input_document.sentence_lengths)
 
-		for i, sentence in enumerate(sentences):
-			phrases_in_sentence = self.extract_phrases(self.input_document.parse_trees[i], utility.count_words(sentence))
+		for i in range(num_sentences):
+			phrases_in_sentence = self.extract_phrases(self.input_document.parse_trees[i], \
+				self.input_document.sentence_lengths[i])
 
 			all_phrases.extend(phrases_in_sentence)
 			len_phrases_in_sentence = len(phrases_in_sentence)

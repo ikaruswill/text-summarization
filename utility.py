@@ -13,9 +13,6 @@ def count_words(text):
 def word_tokenize(text):
 	return nltk.tokenize.word_tokenize(text)
 
-def sent_tokenize(text):
-	return nltk.tokenize.sent_tokenize(text)
-
 def generate_bigrams(tokens):
 	return [' '.join(bigram) for bigram in ngrams(tokens, 2)]
 
