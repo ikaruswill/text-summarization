@@ -10,14 +10,17 @@ DEFAULT_THREADS = 0
 
 def main():
 	for dirpath, dirnames, filenames in os.walk(args.input_dir):
+		print('In:', dirpath)
 		parser = Parser(args.max_sent, args.alt_vp_thresh, args.max_word_length, not args.plaintext, args.threads)
 		found_data = False
 		for filename in filenames:
 			if filename.startswith('.') or not os.path.splitext(filename)[1].startswith('.LDC'):
+				print('Ignore:', filename)
 				continue
 			found_data = True
 			file_path = os.path.join(dirpath, filename)
 			text = utility.load_file(file_path)
+			print('Process:', file_path)
 			parser.process_document(text)
 			
 		if found_data:
