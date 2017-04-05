@@ -115,7 +115,7 @@ class PhraseMatrix(dict):
 
 
 class InputDocument():
-	__p_marker = '\n\n'
+	# __p_marker = '\n\n'
 
 	def __init__(self, input_str, is_tac=True):
 		full_annotator_list = ["tokenize", "ssplit", "pos", "lemma", "ner", "parse", "dcoref"]
@@ -144,7 +144,7 @@ class InputDocument():
 		newline_regex = re.compile('\n')
 		for child in root.find('.//TEXT'):
 			if child.tag == 'P':
-				text += newline_regex.sub(' ', child.text.strip()) + self.__class__.__p_marker
+				text += child.text.strip() + '\n'
 		return text.strip()
 
 	def extract_named_entities(self, result):
@@ -203,11 +203,10 @@ class InputDocument():
 		
 	def prepare_paragraphs(self, text, result):
 		paragraphs = []
-		paragraphs_text = text.split(self.__class__.__p_marker)
-		for paragraph_text in paragraphs_text:
-			paragraph_concept_frequency = self.extract_concepts_from_string(paragraph_text)
-			paragraph = Paragraph(paragraph_concept_frequency)
-			paragraphs.append(paragraph)
+		paragraph_text = text
+		paragraph_concept_frequency = self.extract_concepts_from_string(paragraph_text)
+		paragraph = Paragraph(paragraph_concept_frequency)
+		paragraphs.append(paragraph)
 		
 		return paragraphs
 
