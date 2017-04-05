@@ -9,19 +9,23 @@ DEFAULT_MAX_WORD_LENGTH = 100
 DEFAULT_THREADS = 0
 
 def main():
-	parser = Parser(args.max_sent, args.alt_vp_thresh, args.max_word_length, not args.plaintext, args.threads)
 	for dirpath, dirnames, filenames in os.walk(args.input_dir):
+		parser = Parser(args.max_sent, args.alt_vp_thresh, args.max_word_length, not args.plaintext, args.threads)
+		found_data = False
 		for filename in filenames:
-			if filename.startswith('.'):
+			if filename.startswith('.') or not os.path.splitext(filename)[1].startswith('.LDC'):
 				continue
+			found_data = True
 			file_path = os.path.join(dirpath, filename)
 			text = utility.load_file(file_path)
 			parser.process_document(text)
-
-		parser.update_model()
-		summary = parser.generate_summary()
-		print('Summary: ')
-		print(summary)
+			
+		if found_data:
+			print('Found data, processing...')
+			parser.update_model()
+			summary = parser.generate_summary()
+			print('Summary: ')
+			print(summary)
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Abstractive Summarizer')
