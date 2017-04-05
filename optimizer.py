@@ -139,7 +139,7 @@ class Optimizer():
 			min_id = sys.maxsize
 
 			verbs = []
-			phrases.sort(key=lambda x: operator.attrgetter('phrase_id'))
+			phrases.sort(key=operator.attrgetter('phrase_id'))
 
 			for phrase in phrases:
 				if not phrase.is_NP and min_id > phrase.phrase_id:
