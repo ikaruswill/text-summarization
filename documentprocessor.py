@@ -10,8 +10,8 @@ class DocumentProcessor():
 		self.verb_phrases = []
 		self.all_phrases = []
 
-		self.nouns = []
-		self.verbs = []
+		self.nouns = set()
+		self.verbs = set()
 		self.corefs = {}
 
 	def process_document(self, text):
@@ -27,8 +27,8 @@ class DocumentProcessor():
 		for phrase in phrases:
 			if phrase.is_NP:
 				self.noun_phrases.append(phrase)
-				self.nouns.append(phrase.content)
+				self.nouns.add(phrase.content)
 			else:
 				self.verb_phrases.append(phrase)
-				self.verbs.append(phrase.content)
+				self.verbs.add(phrase.content)
 			self.all_phrases.append(phrase)
