@@ -24,16 +24,20 @@ def main():
 			parser.process_document(text)
 			
 		if found_data:
+			dirname = os.path.split(dirpath)[-1]
 			print('Found data, processing...')
 			parser.update_model()
 			summary = parser.generate_summary()
 			print('Summary: ')
 			print(summary)
 
+			with open(os.path.join(args.output_dir, utility.generate_filename(dirname)), 'w') as f:
+				f.write(summary)
+
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Abstractive Summarizer')
 	parser.add_argument('input_dir', help='input folder containing all text files')
-	parser.add_argument('output_file', help='output file')
+	parser.add_argument('output_dir', help='output directory')
 	parser.add_argument('-w', '--max-word-length', help='maximum word length', default=DEFAULT_MAX_WORD_LENGTH)
 	parser.add_argument('-v', '--alt-vp-thresh', help='alternative VP threshold', default=DEFAULT_ALTERNATIVE_VP_THRESHOLD)
 	parser.add_argument('-s', '--max-sent', help='maximum number of sentences', default=DEFAULT_MAXIMUM_SENTENCE)

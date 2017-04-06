@@ -43,3 +43,11 @@ def calculate_jaccard_index(phrase1, phrase2):
 		return 0.0
 	else:
 		return float(count) / divisor
+
+def generate_filename(dirname):
+	dirname_split = dirname.split('-')
+	dataset = dirname_split[1]
+	topic = dirname_split[0][-1]
+	documentset = dirname_split[0][:-1]
+
+	return documentset + '-' + dataset + '.M.100.' + topic + '.1'
