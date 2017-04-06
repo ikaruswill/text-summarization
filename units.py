@@ -144,7 +144,8 @@ class InputDocument():
 		newline_regex = re.compile('\n')
 		for child in root.find('.//TEXT'):
 			if child.tag == 'P':
-				text += child.text.strip() + '\n'
+				# text += newline_regex.sub(' ', child.text.strip()) + self.__class__.__p_marker
+				text += newline_regex.sub(' ', child.text.strip()) + '\n'
 		return text.strip()
 
 	def extract_named_entities(self, result):
