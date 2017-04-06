@@ -37,17 +37,6 @@ class Phrase():
 	def __eq__(self, phrase):
 		return self.content == phrase
 
-	def generate_concepts(self):
-		if self.concepts:
-			return
-		# TODO
-
-	def get_concepts(self):
-		if not self.concepts:
-			self.generateConcepts()
-
-		return concepts
-
 	@property
 	def is_pronoun(self):
 		return self.is_NP and self.content.lower() in self.pronouns
