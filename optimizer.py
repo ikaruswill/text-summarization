@@ -112,7 +112,7 @@ class Optimizer():
 			selected = var.X
 
 			if selected > 0:
-				selected_verbs[vp.phrase_id] = np
+				selected_verbs[vp.phrase_id] = vp
 
 		selected_NP_lists = {}
 		summary_sentences = {} # SortedDict
