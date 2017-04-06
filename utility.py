@@ -45,7 +45,7 @@ def calculate_jaccard_index(phrase1, phrase2):
 	else:
 		return float(count) / divisor
 
-def calculate_consine_similarity(phrase1, phrase2):
+def calculate_cosine_similarity(phrase1, phrase2):
 	concepts_phrase1 = phrase1.concepts
 	concepts_phrase2 = phrase2.concepts
 	product = 0.0
