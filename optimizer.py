@@ -143,7 +143,7 @@ class Optimizer():
 
 			for phrase in phrases:
 				if not phrase.is_NP and min_id > phrase.phrase_id:
-					mind_id = phrase.phrase_id
+					min_id = phrase.phrase_id
 				verbs.append(phrase.content)
 
 			sentence += ', '.join(verbs)
