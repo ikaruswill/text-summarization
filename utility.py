@@ -1,6 +1,7 @@
 from nltk.util import ngrams
 import nltk.tokenize
 from nltk.corpus import stopwords
+import math
 
 def load_file(file_path):
 	with open(file_path, 'r') as f:
@@ -43,6 +44,23 @@ def calculate_jaccard_index(phrase1, phrase2):
 		return 0.0
 	else:
 		return float(count) / divisor
+
+def calculate_consine_similarity(phrase1, phrase2):
+	concepts_phrase1 = phrase1.concepts
+	concepts_phrase2 = phrase2.concepts
+	product = 0.0
+	for concept, freq in concepts_phrase1.items():
+		if concept in concepts_phrase2:
+			product += freq * concepts_phrase2[concept]
+
+	return product / calculate_phrase_magnitude(phrase1) * calculate_phrase_magnitude(phrase2)
+
+def calculate_phrase_magnitude(phrase):
+	sum_squares = 0
+	for freq in phrase.concepts.values():
+		sum_squares += math.pow(freq, 2)
+
+	return math.sqrt(sum_squares)
 
 def generate_filename(dirname):
 	dirname_split = dirname.split('-')
