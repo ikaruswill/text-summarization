@@ -48,6 +48,8 @@ def calculate_jaccard_index(phrase1, phrase2):
 def calculate_cosine_similarity(phrase1, phrase2):
 	concepts_phrase1 = phrase1.concepts
 	concepts_phrase2 = phrase2.concepts
+	if len(concepts_phrase1) == 0 or len(concepts_phrase2) == 0:
+		return 0.0
 	product = 0.0
 	for concept, freq in concepts_phrase1.items():
 		if concept in concepts_phrase2:
