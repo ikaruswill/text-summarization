@@ -8,6 +8,14 @@ DEFAULT_ALTERNATIVE_VP_THRESHOLD = 0.75
 DEFAULT_MAX_WORD_LENGTH = 100
 DEFAULT_THREADS = 0
 
+def summarize(texts):
+	for text in texts:
+		parser = Parser(DEFAULT_MAXIMUM_SENTENCE, DEFAULT_ALTERNATIVE_VP_THRESHOLD, DEFAULT_MAX_WORD_LENGTH, False, threads=0)
+		parser.process_document(text)
+
+	parser.update_model()
+	return parser.generate_summary()
+
 def main():
 	for dirpath, dirnames, filenames in os.walk(args.input_dir):
 		print('In:', dirpath)
