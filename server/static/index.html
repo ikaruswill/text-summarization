@@ -1,28 +1,39 @@
-<html>
-	<head>
-		<title>
-			Generate search result summaries
-		</title>
-		<script
-			src="https://code.jquery.com/jquery-3.1.1.min.js"
-			integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
-			crossorigin="anonymous">
-		</script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-	</head>
-	<body>
-		<h1>Search result summarizer</h1>
-		<form id="search-form" style="margin-top: 3vh; width: 50vw">
-			<div class="input-group">
-				<input id="search-field" name="search-field" class="form-control" placeholder="Enter search query..." required>
-			</div>
-			<div class="input-group">
-				<span class="input-group-btn">
-					<button class="btn btn-secondary" id="search-btn">
-						Search
-					</button>
-				</span>
-			</div>
-	</body>
+<!DOCTYPE html>
+<html ng-app="App">
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.3/angular.min.js"></script>
+    <script src="app-script.js"></script>
+  </head>
+  <body>
+    <div ng-controller="homeController" class="container">
+      <div class="row">
+        <form class=" col-md-12" ng-submit="processQuery()">
+            <div class="form-group  col-md-offset-1 col-md-8">
+                <input type="text" ng-model="query" size="30" placeholder="search" class="form-control">
+            </div>
+            <div class="form-group col-md-1">
+                <input type="submit" value="search" class="btn-primary form-control col-md-2">
+            </div>
+        </form>
+      </div>
+      <div class="row">
+        <div class="panel panel-default col-md-9 col-md-offset-1">
+            <div class="panel-body">
+                <strong> Summary : </strong> 
+                {{ summary }}
+            </div>
+        </div>
+      </div>
+      <div class="row">
+          <center><h2> Search Results</h2></center>
+          <ul class="list-group">
+                <li ng-repeat="result in results.results" class="col-md-9 col-md-offset-1 list-group-item">
+                    <p> {{ result.title }}
+                    </p>
+                <li>
+            </ul>
+      </div>
+    </div>
+  </body>
 </html>
