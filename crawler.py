@@ -6,6 +6,23 @@ import urllib
 from html.parser import HTMLParser  
 from urllib.parse import urlparse
 
+class BodyPParser(HTMLParser):  
+    """
+    Parser that extracts hrefs
+    """
+    p = []
+    current_tag = ''
+    def handle_starttag(self, tag, attrs):
+        self.current_tag = tag
+
+    def handle_data(self, data):
+        if self.current_tag == 'p':
+            self.p.append(data)
+
+    def get_p(self):
+        res = self.p
+        self.p = []
+        return res
 
 class HREFParser(HTMLParser):  
     """
@@ -89,6 +106,7 @@ class Crawler(object):
         self.depth = depth
         self.content = {}
         self.cache = cache
+        self.parser = BodyPParser()
 
     def crawl(self, url, no_cache=None):
         """
