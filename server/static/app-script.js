@@ -33,7 +33,7 @@ angular.module('App', [])
 				data: urls
 			}).then(function(data){
 				console.log(data)
-				$scope.summary = data.summary
+				$scope.summary = data.data
 			})
 		}
  	});
