@@ -9,9 +9,12 @@ DEFAULT_MAX_WORD_LENGTH = 100
 DEFAULT_THREADS = 0
 
 def summarize(texts):
+	parser = Parser(DEFAULT_MAXIMUM_SENTENCE, DEFAULT_ALTERNATIVE_VP_THRESHOLD, DEFAULT_MAX_WORD_LENGTH, False, threads=0)
 	for text in texts:
-		parser = Parser(DEFAULT_MAXIMUM_SENTENCE, DEFAULT_ALTERNATIVE_VP_THRESHOLD, DEFAULT_MAX_WORD_LENGTH, False, threads=0)
-		parser.process_document(text)
+		try:
+			parser.process_document(text)
+		except UnicodeEncodeError:
+			continue
 
 	parser.update_model()
 	return parser.generate_summary()
