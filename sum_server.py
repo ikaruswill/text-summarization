@@ -12,22 +12,21 @@ app = Flask(__name__, static_folder='server/static')
 def home():
 	return app.send_static_file('index.html')
 
-@app.route('/crawl', methods=['POST'])
-def crawl():
-	urls = request.get_json()
-	crawler = Crawler(depth=1)
+def crawl(urls):
+	results = []
 	for url in urls:
-		domain = urlparse(url).netloc
+		crawler = Crawler(depth=1)
 		crawler.crawl(url)
-		print(crawler.content[domain].keys())
-	pass
-
+		results.append(crawler.content[url])
+	return results
 
 @app.route('/summarize', methods=['POST'])
 def summarize():
-	texts = request.get_json()
+	urls = request.get_json()
+	texts = crawl(urls)
+	print(texts)
 	summary = summarizer.summarize(texts)
-
+	print(summary)
 	return summary
 
 
