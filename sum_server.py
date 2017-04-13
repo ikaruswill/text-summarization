@@ -23,7 +23,7 @@ def crawl(urls):
 @app.route('/summarize', methods=['POST'])
 def summarize():
 	urls = request.get_json()
-	texts = crawl(urls)
+	texts = crawl(urls[0:5])
 	print(texts)
 	summary = summarizer.summarize(texts)
 	print(summary)
