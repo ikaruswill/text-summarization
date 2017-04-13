@@ -22,7 +22,10 @@ def main():
 		parser = Parser(args.max_sent, args.alt_vp_thresh, args.max_word_length, not args.plaintext, args.threads)
 		found_data = False
 		for filename in filenames:
-			if filename.startswith('.') or not os.path.splitext(filename)[1].startswith('.LDC'):
+			if filename.startswith('.'):
+				print('Ignore:', filename)
+				continue
+			if not args.plaintext and not os.path.splitext(filename)[1].startswith('.LDC'):
 				print('Ignore:', filename)
 				continue
 			found_data = True
