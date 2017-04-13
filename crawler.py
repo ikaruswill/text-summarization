@@ -116,13 +116,13 @@ class Crawler(object):
         """
         u_parse = urlparse(url)
         self.domain = u_parse.netloc
-        self.content[self.domain] = {}
         self.scheme = u_parse.scheme
         self.no_cache = no_cache
-        self._crawl([u_parse.path], self.depth)
+        self._crawl([url], self.depth)
 
     def set(self, url, html):
-        self.content[self.domain][url] = html
+        self.parser.feed(html)
+        self.content[url] = ' '.join(self.parser.get_p())
         if self.is_cacheable(url):
             self.cache.set(self.domain, url, html)
 
@@ -158,9 +158,9 @@ class Crawler(object):
         """
         try:
             print("retrieving url... [{}] {}".format(self.domain, url))
-            req = urllib.request.Request('%s://%s%s' % (self.scheme, self.domain, url))
-            response = urllib.urlopen(req)
-            return response.read().decode('ascii', 'ignore')
+            # req = urllib.request.Request('%s://%s%s' % (self.scheme, self.domain, url))
+            response = urllib.request.urlopen(url)
+            return response.read().decode('latin-1')
         except urllib.error.HTTPError as e:
             print("error [{}] {}: {}".format(self.domain, url, e))
             return ''
