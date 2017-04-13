@@ -5,7 +5,7 @@ angular.module('App', [])
 		$scope.processQuery = function() {
 	  		console.log($scope.query)
 			let q = $scope.query
-			let url = "https://api.cognitive.microsoft.com/bing/v5.0/search?count=15&q="+q
+			let url = "https://api.cognitive.microsoft.com/bing/v5.0/search?count=15&q=" + q
 			$http({
 				method: 'GET',
 				url: url,

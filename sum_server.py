@@ -18,7 +18,7 @@ def crawl():
 
 @app.route('/summarize', methods=['POST'])
 def summarize():
-	texts = request.form['texts']
+	texts = request.get_json()
 	summary = summarizer.summarize(texts)
 
 	return summary
