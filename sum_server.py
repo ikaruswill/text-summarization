@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify
 import os
 import summarizer
+from crawler import Crawler
+from urllib.parse import urlparse
+
 
 # path = os.path.dirname(__file__)
 app = Flask(__name__, static_folder='server/static')
@@ -11,8 +14,12 @@ def home():
 
 @app.route('/crawl', methods=['POST'])
 def crawl():
-	links = request.form['links']
-	# Add crawling code
+	urls = request.get_json()
+	crawler = Crawler(depth=1)
+	for url in urls:
+		domain = urlparse(url).netloc
+		crawler.crawl(url)
+		print(crawler.content[domain].keys())
 	pass
 
 
