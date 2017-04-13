@@ -15,7 +15,7 @@ class DocumentProcessor():
 		self.corefs = {}
 
 	def process_document(self, text):
-		doc = InputDocument(text)
+		doc = InputDocument(text, self.is_tac)
 		self.docs.append(doc)
 		self.extract_phrases(doc)
 		self.corefs.update(doc.corefs)
