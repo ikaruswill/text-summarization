@@ -160,7 +160,7 @@ class Crawler(object):
             print("retrieving url... [{}] {}".format(self.domain, url))
             # req = urllib.request.Request('%s://%s%s' % (self.scheme, self.domain, url))
             response = urllib.request.urlopen(url)
-            return response.read().decode('latin-1')
+            return response.read().decode('latin-1', 'replace')
         except urllib.error.HTTPError as e:
             print("error [{}] {}: {}".format(self.domain, url, e))
             return ''
