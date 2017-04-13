@@ -15,9 +15,25 @@ angular.module('App', [])
 			}).then((data)=>{
 				$scope.results = data.data.webPages.value
 				console.log($scope.results)
+				$scope.summarize()
 				//TODO make a post to your server with the required data. process and recieve it to $scope.summary
 				$scope.summary = "summary about "+q
 			});
 			$scope.query = '';
 		};
+		$scope.summarize = function(){
+			urls = $scope.results.map(x => x.url)
+
+			$http({
+				method: 'POST',
+				url: '/summarize',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				data: urls
+			}).then(function(data){
+				console.log(data)
+				$scope.summary = data.summary
+			})
+		}
  	});
