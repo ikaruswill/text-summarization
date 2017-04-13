@@ -17,7 +17,7 @@ class BodyPParser(HTMLParser):
 
     def handle_data(self, data):
         if self.current_tag == 'p':
-            self.p.append(data)
+            self.p.append(data.strip())
 
     def get_p(self):
         res = self.p
