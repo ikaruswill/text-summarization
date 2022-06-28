@@ -1,4 +1,4 @@
 corenlp-pywrap==1.0.5
 nltk==3.2.1
-requests==2.13.0
+requests==2.20.0
 six==1.10.0
